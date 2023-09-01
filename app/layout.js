@@ -14,8 +14,9 @@ import {
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import {useEffect, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import Link from "next/link";
+import {ToastProvider} from "@/components/ToastContext";
 
 const FooterBar = () => {
     return (
@@ -38,11 +39,13 @@ const FooterBar = () => {
     )
 }
 
+export const XTContext = createContext();
 export default function RootLayout({children}) {
     const [token, setToken] = useState(null);
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
+            XTContext.token = token;
             setToken(storedToken);
         }
     }, []);
@@ -50,41 +53,50 @@ export default function RootLayout({children}) {
         <html lang="en">
         <body className='818body'>
         <ThemeRegistry>
-            <AppBar position="fixed" sx={{zIndex: 2000}}>
-                <Toolbar sx={{backgroundColor: 'background.paper', display: 'flex', justifyContent: 'space-between'}}>
-                    {/* DashboardIcon 和 Typography 居左 */}
-                    {/*添加点击事件，跳转首页*/}
-                    <Link href="/">
-                        <Box display="flex" alignItems="center">
-                            <DashboardIcon sx={{color: '#444', mr: 2, transform: 'translateY(-2px)'}}/>
-                            <Typography variant="h6" noWrap component="div" color="black">
-                                818 Inc.
-                            </Typography>
-                        </Box>
-                    </Link>
-                    {/* 根据token的值来决定显示内容 */}
-                    <Box display="flex" alignItems="center">
-                        {token ? (
-                            <Typography noWrap component="div" color="black">
-                                {token}
-                            </Typography>
-                        ) : (
-                            <Link href="/login">
-                                <Button color="primary">Login</Button>
+            <XTContext.Provider value={{token, setToken}}>
+                <ToastProvider>
+                    <AppBar position="fixed" sx={{zIndex: 2000}}>
+                        <Toolbar
+                            sx={{
+                                backgroundColor: 'background.paper',
+                                display: 'flex',
+                                justifyContent: 'space-between'
+                            }}>
+                            {/* DashboardIcon 和 Typography 居左 */}
+                            {/*添加点击事件，跳转首页*/}
+                            <Link href="/">
+                                <Box display="flex" alignItems="center">
+                                    <DashboardIcon sx={{color: '#444', mr: 2, transform: 'translateY(-2px)'}}/>
+                                    <Typography variant="h6" noWrap component="div" color="black">
+                                        818 Inc.
+                                    </Typography>
+                                </Box>
                             </Link>
-                        )}
-                        <Button color="primary">Home</Button>
-                        <Button color="primary">Back</Button>
+                            {/* 根据token的值来决定显示内容 */}
+                            <Box display="flex" alignItems="center">
+                                {token ? (
+                                    <Typography noWrap component="div" color="black">
+                                        {token}
+                                    </Typography>
+                                ) : (
+                                    <Link href="/login">
+                                        <Button color="primary">Login</Button>
+                                    </Link>
+                                )}
+                                <Button color="primary">Home</Button>
+                                <Button color="primary">Back</Button>
+                            </Box>
+                        </Toolbar>
+                    </AppBar>
+                    <Box sx={{
+                        paddingTop: '64px',
+                        minHeight: 'calc(100vh - 64px)',
+                    }}>
+                        {children}
                     </Box>
-                </Toolbar>
-            </AppBar>
-            <Box sx={{
-                paddingTop: '64px',
-                minHeight: 'calc(100vh - 64px)',
-            }}>
-                {children}
-            </Box>
-            <FooterBar/>
+                    <FooterBar/>
+                </ToastProvider>
+            </XTContext.Provider>
         </ThemeRegistry>
         </body>
         </html>
