@@ -29,8 +29,10 @@ const FooterBar = () => {
                     height: '100%',
                     width: '100%',
                     flexDirection: 'column',
-                    padding: '20px 0',
+                    padding: '20px 10px',
                     fontSize: '12px',
+                //     文字居中
+                    textAlign: 'center',
                 }
             }>
                 CopyRight © 2023 tieba818 Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。

@@ -59,7 +59,6 @@ export default function Login() {
                 // 写入token到localStorage
                 localStorage.setItem('token', token);
                 // 跳转并刷新页面
-                // window.location.href = '/';
                 context.setToken(token);
                 router.push('/');
             }, onFailure: () => {
@@ -67,6 +66,11 @@ export default function Login() {
             }
         });
     };
+    // 判断是否已经登录
+    if (context.token) {
+        router.push('/');
+        return <div>正在跳转...</div>
+    }
     return (
         <>
             <StyledContainer container>
