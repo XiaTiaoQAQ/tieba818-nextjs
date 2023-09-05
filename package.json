@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 12011",
+    "deploy": "next build && nohup next start -p 12011 >/dev/null 2>&1 & exit",
     "lint": "next lint"
   },
   "dependencies": {

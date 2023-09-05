@@ -1,12 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     async rewrites() {
-        return [
-            {
-                source: '/818-api/:path*',
-                destination: 'http://localhost:8080/:path*',
-            },
-        ]
+        if (process.env.NODE_ENV === 'development') {
+            return [
+                {
+                    source: '/818-api/:path*',
+                    destination: 'http://localhost:12014/:path*',
+                },
+            ]
+        }
+        return [];
     }
 }
 
