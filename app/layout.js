@@ -10,13 +10,17 @@ import SupportIcon from '@mui/icons-material/Support';
 import LogoutIcon from '@mui/icons-material/Logout';
 import {
     AppBar, Box,
+    Menu,
+    MenuItem,
     Toolbar
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import {createContext, useEffect, useState} from "react";
+import { createContext, useEffect, useState } from "react";
 import Link from "next/link";
-import {ToastProvider} from "@/components/ToastContext";
+import { ToastProvider, useToast } from "@/components/ToastContext";
+import xtRequest from '@/utils/xt-request';
+import { ArrowDropDownCircleOutlined, ArrowDropDownTwoTone } from '@mui/icons-material';
 
 const FooterBar = () => {
     return (
@@ -31,7 +35,7 @@ const FooterBar = () => {
                     flexDirection: 'column',
                     padding: '20px 10px',
                     fontSize: '12px',
-                //     文字居中
+                    //     文字居中
                     textAlign: 'center',
                 }
             }>
@@ -41,9 +45,33 @@ const FooterBar = () => {
     )
 }
 
+
 export const XTContext = createContext();
-export default function RootLayout({children}) {
+export default function RootLayout({ children }) {
     const [token, setToken] = useState(null);
+    const [currentUserInfo, setCurrentUserInfo] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+    const getUserInfo = async () => {
+        await xtRequest({
+            url: '/818-api/818/user/getUserInfo',
+            method: 'POST',
+            onSuccess: (data) => {
+                const dataObj = data.data;
+                setCurrentUserInfo(dataObj);
+            },
+            onFailure: () => {
+                const failureMessage = "获取用户信息失败"
+            }
+        })
+    }
     useEffect(() => {
         const storedToken = localStorage.getItem('token');
         if (storedToken) {
@@ -51,56 +79,94 @@ export default function RootLayout({children}) {
             setToken(storedToken);
         }
     }, []);
+    if (token && !currentUserInfo) {
+        // 获取用户信息
+        getUserInfo().then(() => {
+            console.log('获取用户信息成功');
+        }
+        );
+    }
     return (
         <html lang="en">
-        <body className='818body'>
-        <ThemeRegistry>
-            <XTContext.Provider value={{token, setToken}}>
-                <ToastProvider>
-                    <AppBar position="fixed" sx={{zIndex: 2000}}>
-                        <Toolbar
-                            sx={{
-                                backgroundColor: 'background.paper',
-                                display: 'flex',
-                                justifyContent: 'space-between'
+            <body className='818body'>
+                <ThemeRegistry>
+                    <XTContext.Provider value={{ token, setToken, currentUserInfo, setCurrentUserInfo }}>
+                        <ToastProvider>
+                            <AppBar position="fixed" sx={{ 
+                                zIndex: 2000,
                             }}>
-                            {/* DashboardIcon 和 Typography 居左 */}
-                            {/*添加点击事件，跳转首页*/}
-                            <Link href="/">
-                                <Box display="flex" alignItems="center">
-                                    <DashboardIcon sx={{color: '#444', mr: 2, transform: 'translateY(-2px)'}}/>
-                                    <Typography variant="h6" noWrap component="div" color="black">
-                                        818 Inc.
-                                    </Typography>
-                                </Box>
-                            </Link>
-                            {/* 根据token的值来决定显示内容 */}
-                            <Box display="flex" alignItems="center">
-                                {token ? (
-                                    <Typography noWrap component="div" color="black">
-                                        {token}
-                                    </Typography>
-                                ) : (
-                                    <Link href="/login">
-                                        <Button color="primary">Login</Button>
+                                <Toolbar
+                                    sx={{
+                                        backgroundColor: 'background.paper',
+                                        display: 'flex',
+                                        justifyContent: 'space-between'
+                                    }}>
+                                    {/* DashboardIcon 和 Typography 居左 */}
+                                    {/*添加点击事件，跳转首页*/}
+                                    <Link href="/">
+                                        <Box display="flex" alignItems="center">
+                                            <DashboardIcon sx={{ color: '#444', mr: 2, transform: 'translateY(-2px)' }} />
+                                            <Typography variant="h6" noWrap component="div" color="black">
+                                                818 Inc.
+                                            </Typography>
+                                        </Box>
                                     </Link>
-                                )}
-                                <Button color="primary">Home</Button>
-                                <Button color="primary">Back</Button>
+                                    {/* 根据token的值来决定显示内容 */}
+                                    <Box display="flex" alignItems="center">
+                                        {token ? (
+                                            <>
+                                                <Typography noWrap component="div" color="black" onClick={handleClick}>
+                                                    {currentUserInfo ? currentUserInfo.phone : ''}
+                                                </Typography>
+                                                <ArrowDropDownTwoTone onClick={handleClick} color="secondary" sx={{ cursor: 'pointer' }} />
+                                                <Menu
+                                                    anchorEl={anchorEl}
+                                                    open={Boolean(anchorEl)}
+                                                    onClose={handleClose}
+                                                    sx={{
+                                                        zIndex: 2001
+                                                    }}
+                                                >
+                                                    <Link href="/personal-center">
+                                                        <MenuItem onClick={handleClose}>个人中心</MenuItem>
+                                                    </Link>
+                                                    <Link href="/search-history">
+                                                        <MenuItem onClick={handleClose}>查询历史</MenuItem>
+                                                    </Link>
+                                                    <MenuItem onClick={
+                                                        () => {
+                                                            localStorage.removeItem('token');
+                                                            setToken(null);
+                                                            setCurrentUserInfo(null);
+                                                            window.location.reload();
+                                                        }
+                                                    }>登出</MenuItem>
+                                                </Menu>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Link href="/loginOrRegister?mode=login">
+                                                    <Button color="primary">登录</Button>
+                                                </Link>
+                                                <Link href="/loginOrRegister?mode=register">
+                                                    <Button color="primary">注册</Button>
+                                                </Link>
+                                            </>
+                                        )}
+                                    </Box>
+                                </Toolbar>
+                            </AppBar>
+                            <Box sx={{
+                                paddingTop: '64px',
+                                minHeight: 'calc(100vh - 64px)',
+                            }}>
+                                {children}
                             </Box>
-                        </Toolbar>
-                    </AppBar>
-                    <Box sx={{
-                        paddingTop: '64px',
-                        minHeight: 'calc(100vh - 64px)',
-                    }}>
-                        {children}
-                    </Box>
-                    <FooterBar/>
-                </ToastProvider>
-            </XTContext.Provider>
-        </ThemeRegistry>
-        </body>
+                            <FooterBar />
+                        </ToastProvider>
+                    </XTContext.Provider>
+                </ThemeRegistry>
+            </body>
         </html>
     )
 }

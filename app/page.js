@@ -1,7 +1,7 @@
 'use client';
 import Image from 'next/image';
 import styles from './page.module.css';
-import { Container, Grid, TextField, RadioGroup, FormControlLabel, Radio, Dialog, DialogContent, Typography, LinearProgress, List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, ButtonGroup } from "@mui/material";
+import { Container, Grid, TextField, RadioGroup, FormControlLabel, Radio, Dialog, DialogContent, Typography, LinearProgress, List, ListItem, ListItemAvatar, Avatar, ListItemText, Divider, ButtonGroup, Card } from "@mui/material";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import { Search } from "@mui/icons-material";
@@ -13,6 +13,8 @@ export default function Home() {
     const [searchType, setSearchType] = useState('accurate_user');
     const [searchValue, setSearchValue] = useState('');
     const showToast = useToast();
+    const [currentSearchTypeString, setCurrentSearchTypeString] = useState('');
+    const [currentSearchWord, setCurrentSearchWord] = useState('');
 
     // 根据搜索类型设置placeholder
     const searchPlaceholder = searchType === 'accurate_user' ?
@@ -33,8 +35,6 @@ export default function Home() {
         setSearchValue(event.target.value);
     };
 
-    // 处理
-
     // 如果正在加载，增加进度
     useEffect(() => {
         let progressTimer;
@@ -50,10 +50,18 @@ export default function Home() {
 
     // 搜索功能
     const onClickSearch = async () => {
+        // 调用搜索方法
+        search(searchType, searchValue);
+    };
+
+    // 提取搜索方法
+    const search = async (searchType, searchValue) => {
         if (!searchValue) {
             showToast('搜索内容不能为空');
             return;
         }
+        setCurrentSearchTypeString(searchType === 'accurate_user' ? '精确搜索用户发帖' : '模糊搜索用户、帖子标题、内容');
+        setCurrentSearchWord(searchValue);
         setLoading(true);
         setProgress(0);
 
@@ -73,7 +81,6 @@ export default function Home() {
             setLoading(false);
         }
     };
-
     return (
         <Container>
             {/* 搜索部分 */}
@@ -130,10 +137,17 @@ export default function Home() {
             {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
                 <Grid container spacing={2} sx={{ marginTop: "2rem" }}>
                     <Grid item xs={12}>
-                        <Typography variant="h5">搜索结果（仅展示前100条）:</Typography>
+                        <Typography variant="h5">搜索结果{searchResults.queryType == 'accurate_user' ? '' : '（仅展示前100条）'}:</Typography>
+                        {/* 卡片，展示queryType和queryWordString */}
+                        <Typography variant="body2" color="textSecondary">
+                            搜索类型：{searchResults.queryType == 'accurate_user' ? '精搜用户' : '模糊搜索用户、帖子标题、内容'}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            {searchResults.queryType == 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
+                        </Typography>
                         {/* 副标题灰色字 */}
                         <Typography variant="subtitle2" color="textSecondary">
-                            共{searchResults.tiebaDocumentVOList.length}条结果，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖
+                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType == 'accurate_user' ? '' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖'}
                         </Typography>
                         <List>
                             {searchResults.tiebaDocumentVOList.map((item, index) => (
@@ -144,7 +158,10 @@ export default function Home() {
                                                 alt={item.author}
                                                 src="/path/to/user/image.jpg"
                                                 onClick={() => {
-                                                    console.log("Avatar or author clicked");
+                                                    search('accurate_user', item.authorUserId);
+                                                }}
+                                                sx={{
+                                                    cursor: "pointer"
                                                 }}
                                             />
                                         </ListItemAvatar>
@@ -159,18 +176,33 @@ export default function Home() {
                                                     <Typography
                                                         component="span"
                                                         variant="body2"
+                                                        color="textSecondary"
+                                                    >
+                                                        回复数：{item.replyNum}
+                                                    </Typography>
+                                                    <br />
+                                                    <Typography
+                                                        component="span"
+                                                        variant="body2"
                                                         color="textPrimary"
                                                         onClick={() => {
-                                                            console.log("Avatar or author clicked");
+                                                            search('accurate_user', item.authorUserId);
+                                                        }}
+                                                        sx={{
+                                                            cursor: "pointer"
                                                         }}
                                                     >
                                                         发帖时用户名：{item.author}
                                                     </Typography>
                                                     <br />
                                                     <Typography component="span" variant="body2" color="textSecondary">
-                                                        {item.updateAt
+                                                        快照更新：{item.updateAt
                                                             ? dayjs(item.updateAt).format("YYYY-MM-DD HH:mm:ss")
-                                                            : "未知"} / {item.createAt ? dayjs(item.createAt).format("YYYY-MM-DD HH:mm:ss") : "未知"}
+                                                            : "未知"} / 快照创建：{item.createAt ? dayjs(item.createAt).format("YYYY-MM-DD HH:mm:ss") : "未知"}
+                                                    </Typography>
+                                                    <br />
+                                                    <Typography component="span" variant="body2" color="textSecondary">
+                                                        板块：{item.tiebaName} / 用户ID：{item.authorUserId}
                                                     </Typography>
                                                     <br />
                                                     <ButtonGroup size="small" variant="outlined">
@@ -189,10 +221,6 @@ export default function Home() {
                                                             帖子链接
                                                         </Button>
                                                     </ButtonGroup>
-                                                    <br />
-                                                    <Typography component="span" variant="body2" color="textSecondary">
-                                                        板块：{item.tiebaName} / 用户ID：{item.authorUserId}
-                                                    </Typography>
                                                 </>
                                             }
                                         />
@@ -212,7 +240,13 @@ export default function Home() {
                     <Typography variant="h6" gutterBottom>
                         搜索中，请稍后...
                     </Typography>
-                    <Typography variant="body2" gutterBottom>
+                    <Typography variant="body2" gutterBottom color="textSecondary">
+                        搜索类型：{currentSearchTypeString}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom color="textSecondary">
+                        搜索内容：{currentSearchWord}
+                    </Typography>
+                    <Typography variant="body2" gutterBottom color="textSecondary">
                         预计等待时间为10s
                     </Typography>
 
