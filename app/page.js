@@ -1,6 +1,4 @@
 'use client';
-import Image from 'next/image';
-import styles from './page.module.css';
 import {
     Container,
     Grid,
@@ -32,9 +30,10 @@ import dayjs from 'dayjs';
 import {XTContext} from './layout';
 import CardContent from "@mui/material/CardContent";
 import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon";
-import {FixedSizeList} from "react-window";
+import {FixedSizeList, VariableSizeList} from "react-window";
+import {fromVipLevelToVipName} from "@/utils/utils";
 
-function VIPQueryCard({queryRecordId, onUnlock, onPayVip}) {
+function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const context = useContext(XTContext);
     const {currentUserInfo} = context;
     const [openDialog, setOpenDialog] = useState(false);
@@ -55,6 +54,7 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip}) {
             method: 'POST',
             onSuccess: (data) => {
                 onUnlock(data.data);
+                context.getUserInfo();
             },
             onFailure: () => {
                 // Handle the failure case
@@ -66,10 +66,15 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip}) {
         <div>
             {currentUserInfo && currentUserInfo.vipVO ? (
                 <div>
-                    <p>VIP信息: {currentUserInfo.vipVO.vip.vipLevel}</p>
-                    <Button variant="contained" color="primary" onClick={useVipUnlock}>
-                        使用VIP解锁查询结果
-                    </Button>
+                    <p>VIP信息: {fromVipLevelToVipName(currentUserInfo.vipVO.vip.vipLevel)}</p>
+                    <Typography variant="body2" color="text.secondary">
+                        今日已解锁：{currentUserInfo.vipVO.todayUnlockedCount} / {currentUserInfo.vipVO.vipQueryTimes} 次
+                    </Typography>
+                    {!isUnLocked && (
+                        <Button variant="contained" color="primary" onClick={useVipUnlock}>
+                            使用VIP解锁查询结果
+                        </Button>
+                    )}
                 </div>
             ) : (
                 <div>
@@ -237,6 +242,91 @@ function VIPDialog({openDialog, handleCloseDialog}) {
     );
 }
 
+const SearchResults = ({
+                           searchResults,
+                           search,
+                           onUnlock,
+                           onPayVip
+                       }) => {
+    const getItemSize = (index) => {
+        const data = searchResults.tiebaDocumentVOList[index];
+        console.log("index", index);
+        console.log("data", data);
+        if (!data) {
+            return 200;
+        } else {
+            // 判断是否是手机端
+            const isMobile = window.innerWidth <= 768;
+            const titleLineWords = isMobile ? 18 : 70;
+            // 如果是0行，至少算1行
+            const titleLines = Math.max(data.title.length / titleLineWords, 1);
+            const contentLines = Math.max(data.content.length / titleLineWords, 1);
+            const titleHeight = titleLines * 25;
+            const contentHeight = contentLines * 24;
+            const extraHeight = isMobile ? 160 : 140;
+            return titleHeight + contentHeight + extraHeight;
+        }
+    }
+    return (
+        <>
+            {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
+                <Grid container spacing={2} sx={{marginTop: "2rem"}}>
+                    <Grid item xs={12}>
+                        <Typography variant="h5">
+                            搜索结果{searchResults.queryType === 'accurate_user' ? '' : '（仅展示前100条）'}:
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            搜索类型：{searchResults.queryType === 'accurate_user' ? '精搜用户' : '模糊搜索用户、帖子标题、内容'}
+                        </Typography>
+                        <Typography variant="body2" color="textSecondary">
+                            {searchResults.queryType === 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
+                        </Typography>
+                        <Typography variant="subtitle2" color="textSecondary">
+                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
+                        </Typography>
+                        <VIPQueryCard
+                            queryRecordId={searchResults.queryRecordId}
+                            onUnlock={data => {
+                                console.log('onUnlock data', data);
+                                onUnlock(data);
+                            }}
+                            onPayVip={data => {
+                                console.log('onPayVip data', data);
+                                onPayVip(data);
+                            }}
+                            isUnLocked={searchResults.vipUnlockedTime !== null}
+                        />
+                        {
+                            searchResults.vipUnlockedTime !== null && (
+                                <Typography variant="body2" color="textSecondary">
+                                    VIP解锁时间：{dayjs(searchResults.vipUnlockedTime).format('YYYY-MM-DD HH:mm:ss')}
+                                </Typography>
+                            )
+                        }
+                        <VariableSizeList
+                            height={800}
+                            width="100%"
+                            itemSize={getItemSize}
+                            layout="vertical"
+                            itemCount={searchResults.tiebaDocumentVOList.length}
+                            itemData={{
+                                tiebaDocumentVOList: searchResults.tiebaDocumentVOList,
+                                search: search,
+                                dayjs: dayjs,
+                            }}
+                        >
+                            {Row}
+                        </VariableSizeList>
+                    </Grid>
+                </Grid>
+            )}
+            {searchResults && searchResults.tiebaDocumentVOList.length === 0 && (
+                <Typography variant="h5" sx={{marginTop: "2rem"}}>暂无搜索结果，请调整搜索内容后重试</Typography>
+            )}
+        </>
+    );
+};
+
 
 export default function Home() {
     const [searchType, setSearchType] = useState('accurate_user');
@@ -363,55 +453,23 @@ export default function Home() {
                     </RadioGroup>
                 </Grid>
             </Grid>
-            {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
-                <Grid container spacing={2} sx={{marginTop: "2rem"}}>
-                    <Grid item xs={12}>
-                        <Typography
-                            variant="h5">搜索结果{searchResults.queryType == 'accurate_user' ? '' : '（仅展示前100条）'}:</Typography>
-                        {/* 卡片，展示queryType和queryWordString */}
-                        <Typography variant="body2" color="textSecondary">
-                            搜索类型：{searchResults.queryType == 'accurate_user' ? '精搜用户' : '模糊搜索用户、帖子标题、内容'}
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            {searchResults.queryType == 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
-                        </Typography>
-                        {/* 副标题灰色字 */}
-                        <Typography variant="subtitle2" color="textSecondary">
-                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType == 'accurate_user' ? '' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖'}
-                        </Typography>
-                        {
-                            //如果searchResults.vipUnlockedTime为空则展示
-                            searchResults.vipUnlockedTime == null &&
-                            <VIPQueryCard queryRecordId={searchResults.queryRecordId} onUnlock={
-                                (data) => {
-                                    // 打印
-                                    console.log('onUnlock data', data);
-                                    setSearchResults(data)
-                                }
-                            } onPayVip={
-                                (data) => {
-                                    // 打印
-                                    console.log('onPayVip data', data);
-                                }
-                            }
-                            />
-                        }
-                        <FixedSizeList
-                            height={600}
-                            width='100%'
-                            itemSize={200}
-                            itemCount={searchResults.tiebaDocumentVOList.length}
-                            itemData={{
-                                tiebaDocumentVOList: searchResults.tiebaDocumentVOList,
-                                search: search,
-                                dayjs: dayjs,
-                            }}
-                        >
-                            {Row}
-                        </FixedSizeList>
-                    </Grid>
-                </Grid>
-            )}
+            <SearchResults
+                searchResults={searchResults}
+                search={search}
+                onUnlock={
+                    (data) => {
+                        // 打印
+                        console.log('onUnlock data', data);
+                        setSearchResults(data)
+                    }
+                }
+                onPayVip={
+                    (data) => {
+                        // 打印
+                        console.log('onPayVip data', data);
+                    }
+                }
+            />
 
 
             {/* 加载弹窗 */}

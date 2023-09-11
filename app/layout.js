@@ -2,12 +2,6 @@
 import './globals.css'
 import ThemeRegistry from "@/components/ThemeRegistry/ThemeRegistry";
 import DashboardIcon from '@mui/icons-material/Dashboard';
-import HomeIcon from '@mui/icons-material/Home';
-import StarIcon from '@mui/icons-material/Star';
-import ChecklistIcon from '@mui/icons-material/Checklist';
-import SettingsIcon from '@mui/icons-material/Settings';
-import SupportIcon from '@mui/icons-material/Support';
-import LogoutIcon from '@mui/icons-material/Logout';
 import {
     AppBar, Box,
     Menu,
@@ -21,6 +15,7 @@ import Link from "next/link";
 import {ToastProvider, useToast} from "@/components/ToastContext";
 import xtRequest from '@/utils/xt-request';
 import {ArrowDropDownCircleOutlined, ArrowDropDownTwoTone} from '@mui/icons-material';
+import {fromVipLevelToVipName} from "@/utils/utils";
 
 const FooterBar = () => {
     return (
@@ -39,7 +34,7 @@ const FooterBar = () => {
                     textAlign: 'center',
                 }
             }>
-                CopyRight © 2023 tieba818 Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
+                CopyRight © 2023 tiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
             </div>
         </footer>
     )
@@ -90,7 +85,7 @@ export default function RootLayout({children}) {
         <html lang="en">
         <body className='818body'>
         <ThemeRegistry>
-            <XTContext.Provider value={{token, setToken, currentUserInfo, setCurrentUserInfo}}>
+            <XTContext.Provider value={{token, setToken, currentUserInfo, setCurrentUserInfo, getUserInfo}}>
                 <ToastProvider>
                     <AppBar position="fixed" sx={{
                         zIndex: 2000,
@@ -107,9 +102,14 @@ export default function RootLayout({children}) {
                                 <Box display="flex" alignItems="center">
                                     <DashboardIcon sx={{color: '#444', mr: 2, transform: 'translateY(-2px)'}}/>
                                     <Typography variant="h6" noWrap component="div" color="black">
-                                        818 Inc.
+                                        TiebaIn Inc.
                                     </Typography>
+                                    {/*    请记住访问地址 tieba.in*/}
                                 </Box>
+                                <Typography variant="h6" noWrap component="div" color="black"
+                                            sx={{ml: 1, fontSize: '12px'}}>
+                                    请记住访问地址 tieba.in
+                                </Typography>
                             </Link>
                             {/* 根据token的值来决定显示内容 */}
                             <Box display="flex" alignItems="center">
@@ -119,13 +119,7 @@ export default function RootLayout({children}) {
                                             {currentUserInfo && currentUserInfo.vipVO != null ? (
                                                 <>
                                                     <span style={{color: '#d1c62c', fontWeight: 'bold'}}>
-                                                            {currentUserInfo.vipVO.vip.vipLevel === 1
-                                                                ? '（月卡用户）'
-                                                                : currentUserInfo.vipVO.vipLevel === 2
-                                                                    ? '（季卡用户）'
-                                                                    : currentUserInfo.vipVO.vipLevel === 3
-                                                                        ? '（年卡用户）'
-                                                                        : ''}
+                                                            （{fromVipLevelToVipName(currentUserInfo.vipVO.vip.vipLevel)}）
                                                         </span>
                                                     {currentUserInfo ? currentUserInfo.phone : ''}
                                                 </>
