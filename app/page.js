@@ -242,12 +242,12 @@ function VIPDialog({openDialog, handleCloseDialog}) {
     );
 }
 
-const SearchResults = ({
-                           searchResults,
-                           search,
-                           onUnlock,
-                           onPayVip
-                       }) => {
+export const SearchResults = ({
+                                  searchResults,
+                                  search,
+                                  onUnlock,
+                                  onPayVip
+                              }) => {
     const getItemSize = (index) => {
         const data = searchResults.tiebaDocumentVOList[index];
         console.log("index", index);
