@@ -32,12 +32,14 @@ import CardContent from "@mui/material/CardContent";
 import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon";
 import {FixedSizeList, VariableSizeList} from "react-window";
 import {fromVipLevelToVipName} from "@/utils/utils";
+import Link from "next/link";
 
 function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const context = useContext(XTContext);
     const {currentUserInfo} = context;
     const [openDialog, setOpenDialog] = useState(false);
     const [activationCode, setActivationCode] = useState("");
+    const showToast = useToast();
 
     const openBuyVIPDialog = () => {
         setOpenDialog(true);
@@ -48,7 +50,6 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     };
 
     const useVipUnlock = async () => {
-        // You might need to adjust this request structure based on your application's API utility
         await xtRequest({
             url: '/818-api/818/needPayQuery/useVipToUnBlockQueryRecord?queryRecordId=' + queryRecordId,
             method: 'POST',
@@ -58,6 +59,7 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
             },
             onFailure: () => {
                 // Handle the failure case
+                showToast('VIP解锁失败,请联系管理员或稍后重试');
             }
         })
     };
@@ -78,21 +80,21 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
                 </div>
             ) : (
                 <div>
-                    <p>还不是VIP</p>
+                    <p>您还不是VIP，点击下方按钮购买激活码激活VIP身份</p>
                     <Button variant="contained" color="primary" onClick={openBuyVIPDialog}>
                         立即购买VIP
                     </Button>
                 </div>
             )}
-            <VIPDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog}/>
+            <VIPDialog openDialog={openDialog} handleCloseDialog={handleCloseDialog} onPayVip={onPayVip}/>
         </div>
     );
 }
 
-function VIPDialog({openDialog, handleCloseDialog}) {
+function VIPDialog({openDialog, handleCloseDialog,onPayVip}) {
     const [activeStep, setActiveStep] = useState(0);
     const [activationCode, setActivationCode] = useState("");
-
+    const context = useContext(XTContext);
     const steps = [
         '跳转打开vniao、购买激活码',
         '输入激活码、点击激活',
@@ -137,6 +139,9 @@ function VIPDialog({openDialog, handleCloseDialog}) {
                 if (activeStep === 1) {
                     setActiveStep(prevActiveStep => prevActiveStep + 1);
                 }
+                onPayVip();
+                // 刷新用户信息
+                context.getUserInfo();
             },
             onFailure: () => {
                 showToast("激活码激活失败，请检查激活码是否正确或直接联系管理员。");
@@ -148,7 +153,7 @@ function VIPDialog({openDialog, handleCloseDialog}) {
         // Here you can handle specific logic for each step
         if (activeStep === 0) {
             // 新窗口打开vniao
-            window.open("https://vniao.com");
+            window.open("https://vn.vmp.cc/vniao/2236A1EC");
             setActiveStep(prevActiveStep => prevActiveStep + 1);
         }
         if (activeStep === 1) {
@@ -165,6 +170,12 @@ function VIPDialog({openDialog, handleCloseDialog}) {
                     <CloseIcon/>
                 </IconButton>
             </DialogTitle>
+            {/* 跳转Vniao */}
+            <Link href="https://vn.vmp.cc/vniao/2236A1EC" target="_blank">
+                <Typography variant="body2" color="text.secondary" style={{margin: '-20px 0px 0px 20px'}}>
+                    点击跳转打开vniao、购买激活码
+                </Typography>
+            </Link>
             <div style={{margin: '16px 16px 0 16px', display: 'flex', justifyContent: 'space-between'}}>
                 {priceCards.map(card => (
                     <Card variant="outlined" style={{width: '30%'}} key={card.title}>
@@ -304,6 +315,7 @@ export const SearchResults = ({
                                 </Typography>
                             )
                         }
+                        <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
                         <VariableSizeList
                             height={800}
                             width="100%"

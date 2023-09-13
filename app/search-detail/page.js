@@ -18,10 +18,15 @@ export default function SearchDetail({searchParams: {queryRecordId}}) {
             url, method: 'POST',
             onSuccess: (data) => {
                 const dataObj = data.data;
+                if (!dataObj) {
+                    showToast('获取搜索记录详情失败');
+                    router.push('/');
+                    return;
+                }
                 setSearchDetail(dataObj);
             },
             onFailure: () => {
-                showToast('获取搜索历史失败');
+                showToast('获取搜索记录详情失败');
                 router.push('/');
             }
         });

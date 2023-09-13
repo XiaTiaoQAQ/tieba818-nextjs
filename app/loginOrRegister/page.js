@@ -74,7 +74,7 @@ export default function LoginOrRegister({ mode = 'login' }) {
             onFailure: () => {
                 const failureMessage = isLoginMode
                     ? '登录失败，请检查后重试'
-                    : '注册失败，请检查后重试';
+                    : '注册失败，请检查后重试，可能是手机号已经被注册或者当前IP注册过多';
                 showToast(failureMessage);
             }
         });
