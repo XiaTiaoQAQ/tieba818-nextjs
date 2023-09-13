@@ -58,6 +58,7 @@ export default function PersonalCenter() {
                                         </>
                                     )
                                 }
+                            {/*    还没有VIP？立即激活！*/}
                             </List>
                         ) : (
                             <Typography variant="body1" style={{ marginTop: '15px' }}>

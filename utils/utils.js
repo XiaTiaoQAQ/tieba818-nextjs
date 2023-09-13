@@ -6,6 +6,8 @@ export function fromVipLevelToVipName(vipLevel) {
             return '季卡用户';
         case 3:
             return '年卡用户';
+        case 10:
+            return '体验卡用户';
         default:
             return '未知VIP等级';
     }

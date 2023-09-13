@@ -100,23 +100,23 @@ function VIPDialog({openDialog, handleCloseDialog,onPayVip}) {
         '输入激活码、点击激活',
         '完成激活，享受VIP身份'
     ];
-    const monthlyPrice = 20;
+    const monthlyPrice = 38;
     const priceCards = [
         {
             title: '月卡',
-            price: 20,
+            price: 38,
             originalPrice: null,
             unlocks: '每日20次解锁'
         },
         {
             title: '季卡',
-            price: 52,
+            price: 88,
             originalPrice: monthlyPrice * 3,
             unlocks: '每日50次解锁'
         },
         {
             title: '年卡',
-            price: 188,
+            price: 288,
             originalPrice: monthlyPrice * 12,
             unlocks: '每日88次解锁'
         }
@@ -294,7 +294,7 @@ export const SearchResults = ({
                             {searchResults.queryType === 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
                         </Typography>
                         <Typography variant="subtitle2" color="textSecondary">
-                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
+                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，系统不存在误差' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
                         </Typography>
                         <VIPQueryCard
                             queryRecordId={searchResults.queryRecordId}
