@@ -264,13 +264,14 @@ export const SearchResults = ({
             const titleHeight = titleLines * 25;
             const contentHeight = contentLines * 24;
             const extraHeight = isMobile ? 160 : 140;
+            // console.log("计算方式为-总数 = ", titleHeight + contentHeight + extraHeight, "titleHeight = ", titleHeight, "contentHeight = ", contentHeight, "extraHeight = ", extraHeight);
             return titleHeight + contentHeight + extraHeight;
         }
     }
     return (
         <>
             {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
-                <Grid container spacing={2} sx={{marginTop: "2rem"}}>
+                <Grid container spacing={2} sx={{marginTop: "0.1rem"}}>
                     <Grid item xs={12}>
                         <Typography variant="h5">
                             搜索结果{searchResults.queryType === 'accurate_user' ? '' : '（仅展示前100条）'}:
@@ -328,7 +329,7 @@ export const SearchResults = ({
 };
 
 
-export default function Home() {
+export default function Home({searchParams: {queryType, queryWord}}) {
     const [searchType, setSearchType] = useState('accurate_user');
     const [searchValue, setSearchValue] = useState('');
     const showToast = useToast();
@@ -366,6 +367,14 @@ export default function Home() {
             clearInterval(progressTimer);
         };
     }, [loading, progress]);
+
+    // 在第一次加载时，如果有搜索参数，直接搜索，但是要防止之后的重复搜索
+    useEffect(() => {
+            if (queryType && queryWord && !searchResults) {
+                search(queryType, queryWord);
+            }
+        }
+        , [queryType, queryWord]);
 
     // 搜索功能
     const onClickSearch = async () => {

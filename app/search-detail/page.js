@@ -6,6 +6,7 @@ import React, {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
 import {useToast} from "@/components/ToastContext";
 import {SearchResults} from "@/app/page";
+import dayjs from "dayjs";
 
 export default function SearchDetail({searchParams: {queryRecordId}}) {
     const router = useRouter();
@@ -38,26 +39,40 @@ export default function SearchDetail({searchParams: {queryRecordId}}) {
         return <div>loading...</div>
     }
     return (
-        <Container maxWidth="sm" style={{marginTop: '20px'}}>
+        // <Container maxWidth="sm" style={{marginTop: '20px'}}> 手机端是sm，适配pc
+        <Container maxWidth="md" style={{marginTop: '20px'}}>
             <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" gutterBottom>
                         搜索详情 {queryRecordId}
                     </Typography>
+                    {/* 搜索创建时间  "creationTime": "2023-09-13T10:48:53"*/}
                     <Divider style={{marginBottom: '15px'}}/>
+                    <Typography variant="body1" gutterBottom>
+                        此次搜索快照创建时间：{dayjs(searchDetail.creationTime).format('YYYY-MM-DD HH:mm:ss')}
+                    </Typography>
+                    {/*如需更新最新数据，请重新搜索*/}
+                    <Typography variant="body1" gutterBottom color="textSecondary">
+                        如需更新最新数据，请重新搜索
+                    </Typography>
                     <SearchResults
-                        searchResults={searchDetail}
-                        search= {
-                            (data) => {
+                        searchResults={searchDetail.queryResponse}
+                        search={
+                            (searchType, searchValue) => {
                                 // 打印
-                                console.log('search data', data);
+                                if (searchType && searchValue) {
+                                    router.push('/?queryType=' + searchType + '&queryWord=' + searchValue);
+                                } else {
+                                    showToast('搜索参数不合法');
+                                }
                             }
                         }
                         onUnlock={
                             (data) => {
                                 // 打印
                                 console.log('onUnlock data', data);
-                                setSearchDetail(data)
+                                // 重新获取搜索详情
+                                querySearchDetail();
                             }
                         }
                         onPayVip={

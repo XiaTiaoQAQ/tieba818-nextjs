@@ -58,13 +58,14 @@ export default function SearchHistory() {
             }
         });
     }
-
     useEffect(() => {
         if (!searchHistory) {
             queryRecentSearchHistory();
         }
     }, []);
-
+    if (!searchHistory) {
+        return <div>loading...</div>
+    }
     return (
         <Container maxWidth="sm" style={{marginTop: '20px', padding: '20px'}}>
             <Card variant="outlined">
