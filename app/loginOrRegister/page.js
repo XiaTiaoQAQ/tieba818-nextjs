@@ -1,17 +1,18 @@
 'use client'
-import React, { useState } from 'react';
-import { Grid, styled, TextField } from "@mui/material";
+import React, {useEffect, useState} from 'react';
+import {Grid, styled, TextField} from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useToast } from "@/components/ToastContext";
+import {useToast} from "@/components/ToastContext";
 import xtRequest from "@/utils/xt-request";
-import { useRouter } from 'next/navigation';
-import { XTContext } from "@/app/layout";
+import {useRouter} from 'next/navigation';
+import {XTContext} from "@/app/layout";
+import {useLoadingDialog} from "@/components/LoadingDialogContext";
 
 
-const StyledContainer = styled(Grid)(({ theme }) => ({
+const StyledContainer = styled(Grid)(({theme}) => ({
     height: '100vh',
     display: 'flex',
     justifyContent: 'center',
@@ -20,32 +21,37 @@ const StyledContainer = styled(Grid)(({ theme }) => ({
     backgroundColor: 'rgba(0, 0, 0, 0.1)', // Make the background a bit darker
 }));
 
-const StyledCard = styled(Card)(({ theme }) => ({
+const StyledCard = styled(Card)(({theme}) => ({
     width: '100%',
     maxWidth: 500,
 }));
 
-const StyledTitle = styled(Typography)(({ theme }) => ({
+const StyledTitle = styled(Typography)(({theme}) => ({
     marginBottom: theme.spacing(2),
 }));
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
+const StyledTextField = styled(TextField)(({theme}) => ({
     marginTop: theme.spacing(2),
 }));
 
-const ActionRow = styled(Grid)(({ theme }) => ({
+const ActionRow = styled(Grid)(({theme}) => ({
     marginTop: theme.spacing(2),
     display: 'flex',
     justifyContent: 'space-between',
 }));
 
-export default function LoginOrRegister({ mode = 'login' }) {
+export default function LoginOrRegister({searchParams: {mode = 'login'}}) {
     const context = React.useContext(XTContext);
     const [phone, setPhone] = useState('');
     const [password, setPassword] = useState('');
     const showToast = useToast();
     const [isLoginMode, setIsLoginMode] = useState(mode === 'login');
     const router = useRouter();
+    const loadingDialogContext = useLoadingDialog();
+    useEffect(() => {
+        setIsLoginMode(mode === 'login');
+    }
+        , [mode]);
     const handleSubmission = async (e) => {
         e.preventDefault();
 
@@ -58,10 +64,11 @@ export default function LoginOrRegister({ mode = 'login' }) {
             : `/818-api/818/user/register`;
 
         const url = `${endpoint}?phone=${phone}&password=${password}`;
-
+        loadingDialogContext.show("正在" + (isLoginMode ? '登录' : '注册') + "...");
         await xtRequest({
             url, method: 'POST',
             onSuccess: (data) => {
+                loadingDialogContext.close()
                 const successMessage = isLoginMode ? '登录成功' : '注册成功';
                 showToast(successMessage);
                 const dataObj = data.data;
@@ -75,6 +82,7 @@ export default function LoginOrRegister({ mode = 'login' }) {
                 const failureMessage = isLoginMode
                     ? '登录失败，请检查后重试'
                     : '注册失败，请检查后重试，可能是手机号已经被注册或者当前IP注册过多';
+                loadingDialogContext.close()
                 showToast(failureMessage);
             }
         });
