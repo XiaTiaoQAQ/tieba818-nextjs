@@ -91,7 +91,7 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     );
 }
 
-function VIPDialog({openDialog, handleCloseDialog,onPayVip}) {
+function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
     const [activeStep, setActiveStep] = useState(0);
     const [activationCode, setActivationCode] = useState("");
     const context = useContext(XTContext);
@@ -135,7 +135,7 @@ function VIPDialog({openDialog, handleCloseDialog,onPayVip}) {
             data: {activationCode},
             onSuccess: (data) => {
                 // 如果步骤条是第二步，那么激活成功后，跳转到第三步
-                console.log("data", data);
+                // console.log("data", data);
                 if (activeStep === 1) {
                     setActiveStep(prevActiveStep => prevActiveStep + 1);
                 }
@@ -261,8 +261,8 @@ export const SearchResults = ({
                               }) => {
     const getItemSize = (index) => {
         const data = searchResults.tiebaDocumentVOList[index];
-        console.log("index", index);
-        console.log("data", data);
+        // console.log("index", index);
+        // console.log("data", data);
         if (!data) {
             return 200;
         } else {
@@ -299,11 +299,11 @@ export const SearchResults = ({
                         <VIPQueryCard
                             queryRecordId={searchResults.queryRecordId}
                             onUnlock={data => {
-                                console.log('onUnlock data', data);
+                                // console.log('onUnlock data', data);
                                 onUnlock(data);
                             }}
                             onPayVip={data => {
-                                console.log('onPayVip data', data);
+                                // console.log('onPayVip data', data);
                                 onPayVip(data);
                             }}
                             isUnLocked={searchResults.vipUnlockedTime !== null}
@@ -412,7 +412,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
         try {
             const data = await xtRequest({url, method: 'GET'});
             showToast('搜索成功');
-            console.log(data.data);
+            // console.log(data.data);
             setSearchResults(data.data);  // 新增此行
             setProgress(100);
         } catch (error) {
@@ -462,16 +462,24 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         onChange={handleSearchTypeChange}
                     >
                         <FormControlLabel
-                            value="accurate_user"
-                            control={<Radio color="primary"/>}
-                            label="精确搜索用户发帖"
-                        />
-                        <FormControlLabel
                             value="fuzzy"
                             control={<Radio color="primary"/>}
                             label="模糊搜索用户、帖子标题、内容"
                         />
+                        <FormControlLabel
+                            value="accurate_user"
+                            control={<Radio color="primary"/>}
+                            label="精确搜索用户发帖"
+                        />
+                        {/*垂直*/}
                     </RadioGroup>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                    <Link href="/guide">
+                        <Typography variant="body2" gutterBottom color="primary">
+                            第一次使用？推荐阅读《使用指引》
+                        </Typography>
+                    </Link>
                 </Grid>
             </Grid>
             <SearchResults
@@ -480,14 +488,14 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                 onUnlock={
                     (data) => {
                         // 打印
-                        console.log('onUnlock data', data);
+                        // console.log('onUnlock data', data);
                         setSearchResults(data)
                     }
                 }
                 onPayVip={
                     (data) => {
                         // 打印
-                        console.log('onPayVip data', data);
+                        // console.log('onPayVip data', data);
                     }
                 }
             />

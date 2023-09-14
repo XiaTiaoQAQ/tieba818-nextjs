@@ -75,7 +75,7 @@ export default function SearchDetail({searchParams: {queryRecordId}}) {
                         onUnlock={
                             (data) => {
                                 // 打印
-                                console.log('onUnlock data', data);
+                                // console.log('onUnlock data', data);
                                 // 重新获取搜索详情
                                 querySearchDetail();
                             }
@@ -83,7 +83,7 @@ export default function SearchDetail({searchParams: {queryRecordId}}) {
                         onPayVip={
                             (data) => {
                                 // 打印
-                                console.log('onPayVip data', data);
+                                // console.log('onPayVip data', data);
                             }
                         }
                     />

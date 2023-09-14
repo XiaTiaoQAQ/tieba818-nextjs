@@ -74,11 +74,18 @@ export default function RootLayout({children}) {
             XTContext.token = token;
             setToken(storedToken);
         }
+        console.log("|-------------------------------------------------------------------|");
+        console.log("|                            Tieba.in                               |");
+        console.log("|-------------------------------------------------------------------|");
+        console.log("| Hoping Tieba.in's Black Hole Toolkit can be the Swiss Army Knife, |");
+        console.log("| piercing through the hypocrisy in human nature.                   |");
+        console.log("|-------------------------------------------------------------------|");
+        console.log("%c\"希望Tieba.in黑洞工具箱可以成为瑞士军刀，刺穿人性中的虚伪。\"","color: #000000; font-weight: bold");
     }, []);
     if (token && !currentUserInfo) {
         // 获取用户信息
         getUserInfo().then(() => {
-                console.log('获取用户信息成功');
+                // console.log('获取用户信息成功');
             }
         );
     }
