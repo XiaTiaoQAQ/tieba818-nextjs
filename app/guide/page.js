@@ -1,6 +1,7 @@
 import React from 'react';
 import {Box, Typography} from '@mui/material';
 import ReactMarkdown from "react-markdown";
+import {TiebaInArticle} from "@/components/TiebaInArticle";
 
 function GuideComponent() {
     const markdown = `
@@ -34,48 +35,7 @@ https://tieba.baidu.com/home/main?id=tb.1.d33085fa.g9TjPBtrsaAFVzLKKZvxBw&fr=ind
     `
     return (
         // 兼容手机端居中展示
-        <Box sx={{display: 'flex', justifyContent: 'center'}}>
-            <Box sx={{width: '100%', maxWidth: 800,
-                padding: '1rem',
-                // 行间距
-                '& p': {
-                    marginBottom: '0.8rem',
-                },
-                // 标题
-                '& h1': {
-                    fontSize: '1.5rem',
-                    fontWeight: 'bold',
-                    marginBottom: '0.8rem',
-                },
-                '& h2': {
-                    fontSize: '1.3rem',
-                    fontWeight: 'bold',
-                    marginBottom: '0.8rem',
-                },
-                '& h3': {
-                    fontSize: '1.1rem',
-                    fontWeight: 'bold',
-                    marginBottom: '0.8rem',
-                },
-                // code 块
-                '& pre': {
-                    backgroundColor: '#f5f5f5',
-                    padding: '0.5rem',
-                    borderRadius: '0.5rem',
-                    overflow: 'auto',
-                },
-                // 行内代码
-                '& code': {
-                    backgroundColor: '#f5f5f5',
-                    padding: '0.2rem',
-                    borderRadius: '0.2rem',
-                },
-            }}>
-                <ReactMarkdown>
-                    {markdown}
-                </ReactMarkdown>
-            </Box>
-        </Box>
+        <TiebaInArticle markdown={markdown}/>
     );
 }
 

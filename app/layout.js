@@ -21,22 +21,24 @@ import {LoadingDialogProvider} from "@/components/LoadingDialogContext";
 const FooterBar = () => {
     return (
         <footer>
-            <div style={
-                {
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    height: '100%',
-                    width: '100%',
-                    flexDirection: 'column',
-                    padding: '20px 10px',
-                    fontSize: '12px',
-                    //     文字居中
-                    textAlign: 'center',
-                }
-            }>
-                CopyRight © 2023 tiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
-            </div>
+            <Link href="/contact-us">
+                <div style={
+                    {
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100%',
+                        width: '100%',
+                        flexDirection: 'column',
+                        padding: '20px 10px',
+                        fontSize: '12px',
+                        //     文字居中
+                        textAlign: 'center',
+                    }
+                }>
+                    CopyRight © 2023 tiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
+                </div>
+            </Link>
         </footer>
     )
 }
