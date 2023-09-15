@@ -91,14 +91,14 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     );
 }
 
-function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
+export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
     const [activeStep, setActiveStep] = useState(0);
     const [activationCode, setActivationCode] = useState("");
     const context = useContext(XTContext);
     const steps = [
         '跳转打开vniao、购买激活码',
         '输入激活码、点击激活',
-        '完成激活，享受VIP身份'
+        '激活成功！'
     ];
     const monthlyPrice = 38;
     const priceCards = [

@@ -22,11 +22,11 @@ export default function ContactUsPage() {
 
 请将上述信息发送到我们的指定版权代理的以下邮箱地址：
 
-[youremail@tiebain.com](mailto:youremail@tiebain.com)
+[tieba23.in@gmail.com](mailto:tieba23.in@gmail.com)
 
 请注意，根据《数字千年版权法》（DMCA），对于未经实质审查而提交的虚假的侵权通知，可能会对提交者产生法律责任。
 
----
+----
 
 **CopyRight © 2023 TiebaIn Inc. All Rights Reserved.**
     `
