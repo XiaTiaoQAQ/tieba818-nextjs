@@ -10,6 +10,7 @@ import xtRequest from "@/utils/xt-request";
 import {useRouter} from 'next/navigation';
 import {XTContext} from "@/app/layout";
 import {useLoadingDialog} from "@/components/LoadingDialogContext";
+import Link from "next/link";
 
 
 const StyledContainer = styled(Grid)(({theme}) => ({
@@ -49,8 +50,8 @@ export default function LoginOrRegister({searchParams: {mode = 'login'}}) {
     const router = useRouter();
     const loadingDialogContext = useLoadingDialog();
     useEffect(() => {
-        setIsLoginMode(mode === 'login');
-    }
+            setIsLoginMode(mode === 'login');
+        }
         , [mode]);
     const handleSubmission = async (e) => {
         e.preventDefault();
@@ -115,6 +116,13 @@ export default function LoginOrRegister({searchParams: {mode = 'login'}}) {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
+                        {/*在您登录或注册前，请确保您已阅读并同意《数据使用说明》和《免责条款》*/}
+                        <Typography variant="body2" color="textSecondary" align="left" sx={{marginTop: '0.5rem'}}>
+                            在您登录或注册前，请确保您已阅读并同意
+                            <Link href="/disclaimer-clause" color="primary">
+                                《数据使用说明》
+                            </Link>
+                        </Typography>
                         <ActionRow container>
                             <Button color="primary" onClick={handleSubmission}>
                                 {isLoginMode ? '登录' : '注册'}
