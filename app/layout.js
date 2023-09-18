@@ -82,7 +82,7 @@ export default function RootLayout({children}) {
         console.log("| Hoping Tieba.in's Black Hole Toolkit can be the Swiss Army Knife, |");
         console.log("| piercing through the hypocrisy in human nature.                   |");
         console.log("|-------------------------------------------------------------------|");
-        console.log("%c\"希望Tieba.in黑洞工具箱可以成为瑞士军刀，刺穿人性中的虚伪。\"","color: #000000; font-weight: bold");
+        console.log("%c\"希望Tieba.in黑洞工具箱可以成为瑞士军刀，刺穿人性中的虚伪。\"", "color: #000000; font-weight: bold");
     }, []);
     if (token && !currentUserInfo) {
         // 获取用户信息
@@ -155,6 +155,10 @@ export default function RootLayout({children}) {
                                                 </Link>
                                                 <Link href="/search-history">
                                                     <MenuItem onClick={handleClose}>查询历史</MenuItem>
+                                                </Link>
+                                                {/* 工单系统 */}
+                                                <Link href="/work-order">
+                                                    <MenuItem onClick={handleClose}>工单系统</MenuItem>
                                                 </Link>
                                                 <MenuItem onClick={
                                                     () => {
