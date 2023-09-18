@@ -101,6 +101,9 @@ export default function LoginOrRegister({searchParams: {mode = 'login'}}) {
                         <StyledTitle variant="h5">
                             {isLoginMode ? '登录' : '注册'}
                         </StyledTitle>
+                        <Typography variant="body2" color="textSecondary" align="left">
+                            Tieba Inc.后续将开启邀请注册制，请您妥善保管您的账号，恶意注册、请求将会导致账号、IP永久封禁。
+                        </Typography>
                         <StyledTextField
                             label="账号"
                             variant="outlined"
