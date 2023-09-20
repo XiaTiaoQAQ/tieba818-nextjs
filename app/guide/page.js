@@ -6,7 +6,7 @@ import {TiebaInArticle} from "@/components/TiebaInArticle";
 function GuideComponent() {
     const markdown = `
 # 前言
-希望Tieba.in黑洞工具箱可以成为瑞士军刀，刺穿人性中的虚伪。
+使用Tieba.in表示您已明确了解并同意《Tieba.in 用户条约与免责条款》。
 # 使用教程
 ## 如何精搜目标用户
 ### 直接使用ID查询
@@ -31,7 +31,7 @@ https://tieba.baidu.com/home/main?id=tb.1.d33085fa.g9TjPBtrsaAFVzLKKZvxBw&fr=ind
 4.在搜索结果中点击用户头像或用户名，即可进入精确搜索模式。
 \\
 \\
-感谢您选择并使用Tieba.in黑洞工具箱。我们始终致力于为用户提供更高效、更专业的搜索体验。如有任何建议或问题，请随时与我们联系。
+感谢您选择并使用Tieba.in。我们始终致力于为用户提供更高效、更专业的搜索体验。如有任何建议或问题，请随时与我们联系。
     `
     return (
         // 兼容手机端居中展示

@@ -19,11 +19,11 @@ import {
     Card,
     DialogTitle,
     DialogContentText,
-    DialogActions, Stepper, Step, StepLabel, IconButton
+    DialogActions, Stepper, Step, StepLabel, IconButton, Tooltip
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import Button from "@mui/material/Button";
-import {Search, ShoppingBag, VpnKey} from "@mui/icons-material";
+import {HelpOutline, Search, ShoppingBag, VpnKey} from "@mui/icons-material";
 import {useToast} from '@/components/ToastContext';
 import xtRequest from '@/utils/xt-request';
 import dayjs from 'dayjs';
@@ -33,6 +33,7 @@ import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/
 import {FixedSizeList, VariableSizeList} from "react-window";
 import {fromVipLevelToVipName} from "@/utils/utils";
 import Link from "next/link";
+import SuportTiebaList from "@/components/SuportTiebaList";
 
 function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const context = useContext(XTContext);
@@ -259,8 +260,24 @@ export const SearchResults = ({
                                   onUnlock,
                                   onPayVip
                               }) => {
+    // 对tiebaDocumentVOList进行统计
+    const countTiebaNames = (list) => {
+        return list.reduce((acc, item) => {
+            acc[item.tiebaName] = (acc[item.tiebaName] || 0) + 1;
+            return acc;
+        }, {});
+    };
+
+    // tiebaName过滤的状态
+    const [filteredTiebaName, setFilteredTiebaName] = useState('全部');
+
+    const filteredList = filteredTiebaName === '全部'
+        ? searchResults? searchResults.tiebaDocumentVOList : []
+        : searchResults.tiebaDocumentVOList.filter(item => item.tiebaName === filteredTiebaName);
+
+    const tiebaNameCounts = searchResults ? countTiebaNames(searchResults.tiebaDocumentVOList) : {};
     const getItemSize = (index) => {
-        const data = searchResults.tiebaDocumentVOList[index];
+        const data = filteredList[index];
         // console.log("index", index);
         // console.log("data", data);
         if (!data) {
@@ -296,6 +313,13 @@ export const SearchResults = ({
                         <Typography variant="subtitle2" color="textSecondary">
                             共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，系统不存在误差' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
                         </Typography>
+                        {
+                            searchResults.vipUnlockedTime !== null && (
+                                <Typography variant="body2" color="textSecondary">
+                                    此记录解锁时间：{dayjs(searchResults.vipUnlockedTime).format('YYYY-MM-DD HH:mm:ss')}
+                                </Typography>
+                            )
+                        }
                         <VIPQueryCard
                             queryRecordId={searchResults.queryRecordId}
                             onUnlock={data => {
@@ -308,31 +332,47 @@ export const SearchResults = ({
                             }}
                             isUnLocked={searchResults.vipUnlockedTime !== null}
                         />
-                        {
-                            searchResults.vipUnlockedTime !== null && (
-                                <Typography variant="body2" color="textSecondary">
-                                    VIP解锁时间：{dayjs(searchResults.vipUnlockedTime).format('YYYY-MM-DD HH:mm:ss')}
-                                </Typography>
-                            )
-                        }
                         <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
-                        <VariableSizeList
-                            height={800}
-                            width="100%"
-                            itemSize={getItemSize}
-                            layout="vertical"
-                            itemCount={searchResults.tiebaDocumentVOList.length}
-                            itemData={{
-                                tiebaDocumentVOList: searchResults.tiebaDocumentVOList,
-                                search: search,
-                                dayjs: dayjs,
-                            }}
-                        >
-                            {Row}
-                        </VariableSizeList>
                     </Grid>
+                    {/* ... (保持其他部分不变) */}
+                    <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+
+                    {/* 添加tiebaName过滤的按钮 */}
+                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem"}}>
+                        <Button
+                            onClick={() => setFilteredTiebaName('全部')}
+                            variant={filteredTiebaName === '全部' ? 'contained' : 'outlined'}
+                        >
+                            全部({searchResults.tiebaDocumentVOList.length})
+                        </Button>
+                        {Object.entries(tiebaNameCounts).map(([name, count]) => (
+                            <Button
+                                key={name}
+                                onClick={() => setFilteredTiebaName(name)}
+                                variant={filteredTiebaName === name ? 'contained' : 'outlined'}
+                            >
+                                {name}({count})
+                            </Button>
+                        ))}
+                    </ButtonGroup>
+
+                    <VariableSizeList
+                        height={800}
+                        width="100%"
+                        itemSize={getItemSize}
+                        layout="vertical"
+                        itemCount={filteredList.length}
+                        itemData={{
+                            tiebaDocumentVOList: filteredList,
+                            search: search,
+                            dayjs: dayjs,
+                        }}
+                    >
+                        {Row}
+                    </VariableSizeList>
                 </Grid>
             )}
+
             {searchResults && searchResults.tiebaDocumentVOList.length === 0 && (
                 <Typography variant="h5" sx={{marginTop: "2rem"}}>暂无搜索结果，请调整搜索内容后重试</Typography>
             )}
@@ -364,6 +404,21 @@ export default function Home({searchParams: {queryType, queryWord}}) {
 
     // 处理搜索输入变化
     const handleSearchInputChange = (event) => {
+        if (searchType === 'accurate_user') {
+            if (event.target.value.startsWith('http')) {
+                try {
+                    const url = new URL(event.target.value);
+                    const params = new URLSearchParams(url.search);
+                    const idValue = params.get('id');
+                    if (idValue && idValue.startsWith('tb.1.')) {
+                        setSearchValue(idValue);
+                        return;
+                    }
+                } catch (e) {
+                    // 不是有效的URL
+                }
+            }
+        }
         setSearchValue(event.target.value);
     };
 
@@ -481,7 +536,9 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         </Typography>
                     </Link>
                 </Grid>
+            {/*    目前支持的贴吧列表+问号Icon，有点击事件*/}
             </Grid>
+            <SuportTiebaList/>
             <SearchResults
                 searchResults={searchResults}
                 search={search}

@@ -25,7 +25,7 @@ export const LoadingDialogProvider = ({children}) => {
     return (
         <LoadingDialogContext.Provider value={{show: showLoadingDialog, close: closeLoadingDialog}}>
             {children}
-            <Dialog open={dialogData.open} onClose={closeLoadingDialog}>
+            <Dialog open={dialogData.open}>
                 <div style={{padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
                     <CircularProgress/>
                     {dialogData.message && <Typography style={{marginTop: '16px'}}>{dialogData.message}</Typography>}

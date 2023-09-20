@@ -32,7 +32,7 @@ async function xtRequest({
         // 如果状态码是 401，说明 token 失效了，需要重新登录，清除 localStorage 中的 token
         if (response.status === 401) {
             localStorage.removeItem('token');
-            window.location.href = '/';
+            window.location.href = '/loginOrRegister?mode=login';
         }
         const data = await response.json();
         if (data.success) {
