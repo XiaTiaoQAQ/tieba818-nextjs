@@ -94,6 +94,8 @@ export default function RootLayout({children}) {
     return (
         <html lang="en">
         <body className='818body'>
+        {/*Title*/}
+        <title>Tieba.in Inc.</title>
         <ThemeRegistry>
             <XTContext.Provider value={{token, setToken, currentUserInfo, setCurrentUserInfo, getUserInfo}}>
                 <LoadingDialogProvider>
