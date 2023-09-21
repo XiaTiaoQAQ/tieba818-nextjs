@@ -49,7 +49,7 @@ export default function SearchDetail({searchParams: {queryRecordId}}) {
             <Card variant="outlined">
                 <CardContent>
                     <Typography variant="h5" gutterBottom>
-                        搜索详情 {queryRecordId}
+                        搜索详情
                     </Typography>
                     {/* 搜索创建时间  "creationTime": "2023-09-13T10:48:53"*/}
                     <Divider style={{marginBottom: '15px'}}/>

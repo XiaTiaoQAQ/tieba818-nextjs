@@ -345,7 +345,7 @@ export const SearchResults = ({
                     <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
 
                     {/* 添加tiebaName过滤的按钮 */}
-                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem"}}>
+                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem", flexWrap: "wrap" }}>
                         <Button
                             onClick={() => setFilteredTiebaName('全部')}
                             variant={filteredTiebaName === '全部' ? 'contained' : 'outlined'}
