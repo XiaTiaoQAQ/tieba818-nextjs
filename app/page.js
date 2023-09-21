@@ -34,6 +34,7 @@ import {FixedSizeList, VariableSizeList} from "react-window";
 import {fromVipLevelToVipName} from "@/utils/utils";
 import Link from "next/link";
 import SuportTiebaList from "@/components/SuportTiebaList";
+import {useLoadingDialog} from "@/components/LoadingDialogContext";
 
 function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const context = useContext(XTContext);
@@ -41,7 +42,7 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const [openDialog, setOpenDialog] = useState(false);
     const [activationCode, setActivationCode] = useState("");
     const showToast = useToast();
-
+    const loadingDialogContext = useLoadingDialog();
     const openBuyVIPDialog = () => {
         setOpenDialog(true);
     };
@@ -51,16 +52,19 @@ function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     };
 
     const useVipUnlock = async () => {
+        loadingDialogContext.show("解锁中，请稍后...");
         await xtRequest({
             url: '/818-api/818/needPayQuery/useVipToUnBlockQueryRecord?queryRecordId=' + queryRecordId,
             method: 'POST',
             onSuccess: (data) => {
                 onUnlock(data.data);
                 context.getUserInfo();
+                loadingDialogContext.close();
             },
             onFailure: () => {
                 // Handle the failure case
                 showToast('VIP解锁失败,请联系管理员或稍后重试');
+                loadingDialogContext.close();
             }
         })
     };
@@ -96,6 +100,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
     const [activeStep, setActiveStep] = useState(0);
     const [activationCode, setActivationCode] = useState("");
     const context = useContext(XTContext);
+    const loadingDialogContext = useLoadingDialog();
     const steps = [
         '跳转打开vniao、购买激活码',
         '输入激活码、点击激活',
@@ -129,7 +134,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
             showToast("请输入激活码");
             return;
         }
-
+        loadingDialogContext.show("激活中，请稍后...");
         await xtRequest({
             url: '/818-api/818/needPayQuery/useActivationCode?activationCode=' + activationCode,
             method: 'POST',
@@ -140,12 +145,14 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                 if (activeStep === 1) {
                     setActiveStep(prevActiveStep => prevActiveStep + 1);
                 }
+                loadingDialogContext.close();
                 onPayVip();
                 // 刷新用户信息
                 context.getUserInfo();
             },
             onFailure: () => {
                 showToast("激活码激活失败，请检查激活码是否正确或直接联系管理员。");
+                loadingDialogContext.close();
             }
         });
     };
@@ -272,7 +279,7 @@ export const SearchResults = ({
     const [filteredTiebaName, setFilteredTiebaName] = useState('全部');
 
     const filteredList = filteredTiebaName === '全部'
-        ? searchResults? searchResults.tiebaDocumentVOList : []
+        ? searchResults ? searchResults.tiebaDocumentVOList : []
         : searchResults.tiebaDocumentVOList.filter(item => item.tiebaName === filteredTiebaName);
 
     const tiebaNameCounts = searchResults ? countTiebaNames(searchResults.tiebaDocumentVOList) : {};
@@ -536,7 +543,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         </Typography>
                     </Link>
                 </Grid>
-            {/*    目前支持的贴吧列表+问号Icon，有点击事件*/}
+                {/*    目前支持的贴吧列表+问号Icon，有点击事件*/}
             </Grid>
             <SuportTiebaList/>
             <SearchResults
