@@ -382,7 +382,7 @@ export const SearchResults = ({
 
 
 export default function Home({searchParams: {queryType, queryWord}}) {
-    const [searchType, setSearchType] = useState('accurate_user');
+    const [searchType, setSearchType] = useState('fuzzy');
     const [searchValue, setSearchValue] = useState('');
     const showToast = useToast();
     const [currentSearchTypeString, setCurrentSearchTypeString] = useState('');
@@ -390,7 +390,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
 
     // 根据搜索类型设置placeholder
     const searchPlaceholder = searchType === 'accurate_user' ?
-        '输入用户的用户名/id 精确查询他的发帖' :
+        '输入用户的主页链接URL/id 精确查询他的发帖' :
         '模糊搜索用户名、帖子标题、内容（适用于找不到用户名、仅有帖子标题或内容的情况）';
 
     const [loading, setLoading] = useState(false);

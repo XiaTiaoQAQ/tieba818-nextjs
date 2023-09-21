@@ -20,7 +20,7 @@ export default function ContactUsPage() {
 - 您的联系信息，如地址、电话号码和电子邮件地址。
 - 一个声明，表明您相信上述信息是正确的，并且您是所声称的侵权内容的版权所有者或已被授权代表该版权所有者。
 
-请将上述信息发送到我们的指定版权代理的以下邮箱地址：
+请将上述信息发送到以下邮箱地址：
 
 [tieba23.in@gmail.com](mailto:tieba23.in@gmail.com)
 
