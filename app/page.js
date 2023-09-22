@@ -318,7 +318,7 @@ export const SearchResults = ({
                             {searchResults.queryType === 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
                         </Typography>
                         <Typography variant="subtitle2" color="textSecondary">
-                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，系统不存在误差' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
+                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，快照不保证所有发帖记录都留存（例如：发帖秒删），但所展示快照不存在误差，一定是对方发帖' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
                         </Typography>
                         {
                             searchResults.vipUnlockedTime !== null && (
@@ -345,7 +345,7 @@ export const SearchResults = ({
                     <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
 
                     {/* 添加tiebaName过滤的按钮 */}
-                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem", flexWrap: "wrap" }}>
+                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem", flexWrap: "wrap"}}>
                         <Button
                             onClick={() => setFilteredTiebaName('全部')}
                             variant={filteredTiebaName === '全部' ? 'contained' : 'outlined'}
@@ -478,7 +478,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
             setSearchResults(data.data);  // 新增此行
             setProgress(100);
         } catch (error) {
-            showToast('搜索失败，请检查后重试');
+            showToast('搜索失败，请检查后重试，倘若是超时，请前往查询历史查询结果');
         } finally {
             setLoading(false);
         }
@@ -578,7 +578,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         搜索内容：{currentSearchWord}
                     </Typography>
                     <Typography variant="body2" gutterBottom color="textSecondary">
-                        预计等待时间为10s
+                        预计等待时间为10s，倘若超时，请稍等一会后前往右上角查询历史查看结果
                     </Typography>
 
                     <Grid container alignItems="center" spacing={2}>

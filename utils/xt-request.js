@@ -26,7 +26,8 @@ async function xtRequest({
     if (body && (method === 'POST' || method === 'PUT')) {
         config.body = JSON.stringify(body);
     }
-
+    // 设置超时时间
+    config.timeout = 60000; // 60秒
     try {
         const response = await fetch(url, config);
         // 如果状态码是 401，说明 token 失效了，需要重新登录，清除 localStorage 中的 token

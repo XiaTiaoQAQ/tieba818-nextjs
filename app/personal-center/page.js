@@ -6,11 +6,13 @@ import {XTContext} from "@/app/layout";
 import {fromVipLevelToVipName} from "@/utils/utils";
 import Button from "@mui/material/Button";
 import {VIPDialog} from "@/app/page";
+import InvisibleUserDialog from "@/components/TiebaInvisibleUserDialog";
 
 export default function PersonalCenter() {
     const context = useContext(XTContext);
     const {currentUserInfo} = context;
     const [openDialog, setOpenDialog] = useState(false);
+    const [openInvisibleUserDialog, setOpenInvisibleUserDialog] = useState(false);
     return (
         <Container maxWidth="sm" style={{marginTop: '20px'}}>
             <Card variant="outlined">
@@ -80,10 +82,25 @@ export default function PersonalCenter() {
                                                 <ListItemText primary="今天已使用解锁次数"
                                                               secondary={currentUserInfo.vipVO.todayUnlockedCount}/>
                                             </ListItem>
+                                            <Divider style={{margin: '15px 0'}}/>
+                                            <Typography variant="h6" gutterBottom>
+                                                设置仅14天可见贴吧用户
+                                                <Typography variant="body2" gutterBottom color="textSecondary">
+                                                    暂时仅限年卡用户使用，设置后，您指定的贴吧用户发帖快照将14天内可见。
+                                                </Typography>
+                                                {/*    设置按钮*/}
+                                                {/*如果不是年卡用户，则设为禁用按钮*/}
+                                                <Button variant="contained" color="primary" style={{marginTop: '15px'}}
+                                                        disabled={currentUserInfo.vipVO.vip.vipLevel !== 3}
+                                                        onClick={() => {
+                                                            setOpenInvisibleUserDialog(true);
+                                                        }}>
+                                                    设置
+                                                </Button>
+                                            </Typography>
                                         </>
                                     )
                                 }
-                                {/*    还没有VIP？立即激活！*/}
                             </List>
                         ) : (
                             <Typography variant="body1" style={{marginTop: '15px'}}>
@@ -93,9 +110,11 @@ export default function PersonalCenter() {
                     }
                 </CardContent>
             </Card>
-            {/*({openDialog, handleCloseDialog, onPayVip}) {*/}
             <VIPDialog openDialog={openDialog} handleCloseDialog={() => setOpenDialog(false)} onPayVip={() => {
             }}/>
+            {/*    export default function InvisibleUserDialog(props) {*/}
+            <InvisibleUserDialog openDialog={openInvisibleUserDialog}
+                                 handleCloseDialog={() => setOpenInvisibleUserDialog(false)}/>
         </Container>
     );
 }
