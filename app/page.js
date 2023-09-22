@@ -318,7 +318,7 @@ export const SearchResults = ({
                             {searchResults.queryType === 'accurate_user' ? '用户ID' : '搜索内容'}：{searchResults.queryWordString}
                         </Typography>
                         <Typography variant="subtitle2" color="textSecondary">
-                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，快照不保证所有发帖记录都留存（例如：发帖秒删），但所展示快照不存在误差，一定是对方发帖' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
+                            共{searchResults.tiebaDocumentVOList.length}条结果{searchResults.queryType === 'accurate_user' ? '，快照不保证所有发帖记录都留存（例如：发帖秒删），但所展示快照中不存在误差，一定是对方发帖过才会被系统记录' : '，如果没有命中符合的结果，请调整模糊搜索的内容，点击用户头像或名称可以精确搜索目标用户的发帖，精搜用户解锁后将不限制返回条数'}
                         </Typography>
                         {
                             searchResults.vipUnlockedTime !== null && (
