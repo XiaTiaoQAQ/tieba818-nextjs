@@ -275,6 +275,11 @@ export const SearchResults = ({
         }, {});
     };
 
+    // 如果searchResults改变，那么就重置filteredTiebaName为全部
+    useEffect(() => {
+        setFilteredTiebaName('全部');
+    }, [searchResults]);
+
     // tiebaName过滤的状态
     const [filteredTiebaName, setFilteredTiebaName] = useState('全部');
 
