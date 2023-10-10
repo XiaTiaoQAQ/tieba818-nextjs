@@ -45,6 +45,7 @@ const FooterBar = () => {
 
 
 export const XTContext = createContext();
+
 export default function RootLayout({children}) {
     const [token, setToken] = useState(null);
     const [currentUserInfo, setCurrentUserInfo] = useState(null);
@@ -101,7 +102,7 @@ export default function RootLayout({children}) {
                 <LoadingDialogProvider>
                     <ToastProvider>
                         <AppBar position="fixed" sx={{
-                            zIndex: 2000,
+                            zIndex: 1000,
                         }}>
                             <Toolbar
                                 sx={{

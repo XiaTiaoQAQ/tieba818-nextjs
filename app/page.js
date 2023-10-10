@@ -19,7 +19,7 @@ import {
     Card,
     DialogTitle,
     DialogContentText,
-    DialogActions, Stepper, Step, StepLabel, IconButton, Tooltip
+    DialogActions, Stepper, Step, StepLabel, IconButton, Tooltip, List
 } from "@mui/material";
 import {useContext, useEffect, useState} from "react";
 import Button from "@mui/material/Button";
@@ -35,6 +35,7 @@ import {fromVipLevelToVipName} from "@/utils/utils";
 import Link from "next/link";
 import SuportTiebaList from "@/components/SuportTiebaList";
 import {useLoadingDialog} from "@/components/LoadingDialogContext";
+import UserInfoCard from "@/components/UserInfoCard";
 
 function VIPQueryCard({queryRecordId, onUnlock, onPayVip, isUnLocked}) {
     const context = useContext(XTContext);
@@ -109,6 +110,12 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
     const monthlyPrice = 38;
     const priceCards = [
         {
+            title: '体验卡(周卡)',
+            price: 15,
+            originalPrice: null,
+            unlocks: '限时出售\n 每日10次解锁'
+        },
+        {
             title: '月卡',
             price: 38,
             originalPrice: null,
@@ -124,7 +131,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
             title: '年卡',
             price: 288,
             originalPrice: monthlyPrice * 12,
-            unlocks: '每日88次解锁'
+            unlocks: '每日88次解锁\n 系统内设置仅14天快照可见用户（1名）\n 工单优先处理'
         }
     ];
 
@@ -184,28 +191,37 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                     点击跳转打开vniao、购买激活码
                 </Typography>
             </Link>
-            <div style={{margin: '16px 16px 0 16px', display: 'flex', justifyContent: 'space-between'}}>
+            <div style={{ margin: '16px' }}>
                 {priceCards.map(card => (
-                    <Card variant="outlined" style={{width: '30%'}} key={card.title}>
+                    <Card variant="outlined" style={{ width: '100%', marginBottom: '8px' }} key={card.title}>
                         <CardContent>
-                            <Typography variant="h5" component="div">
-                                {card.title}
-                            </Typography>
-                            {card.originalPrice &&
-                                <Typography variant="body2" style={{textDecoration: 'line-through', color: 'grey'}}>
-                                    {card.originalPrice}元
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Typography variant="h6" component="div"
+                                sx={{
+                                    fontWeight: 'bold',
+                                }}
+                                >
+                                    {card.title}
                                 </Typography>
-                            }
-                            <Typography variant="h6" color="primary">
-                                {card.price.toFixed(2)}元
-                            </Typography>
-                            <Typography variant="subtitle2">
+                                <div>
+                                    {card.originalPrice &&
+                                        <Typography variant="body2" style={{ textDecoration: 'line-through', color: 'grey', display: 'inline', marginRight: '8px' }}>
+                                            {card.originalPrice}元
+                                        </Typography>
+                                    }
+                                    <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 'bold', display: 'inline' }}>
+                                        {card.price.toFixed(2)}元
+                                    </Typography>
+                                </div>
+                            </div>
+                            <Typography variant="subtitle2" sx={{ whiteSpace: 'pre-line', marginTop: '8px' }}>
                                 {card.unlocks}
                             </Typography>
                         </CardContent>
                     </Card>
                 ))}
             </div>
+
             <Stepper activeStep={activeStep} alternativeLabel style={{padding: '16px'}}>
                 {steps.map(label => (
                     <Step key={label}>
@@ -213,7 +229,12 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                     </Step>
                 ))}
             </Stepper>
-            <DialogContent>
+            <DialogContent
+                sx={{
+                    // 设置内容完整显示
+                    overflow: 'visible',
+                }}
+            >
                 {activeStep === 0 && (
                     <div style={{textAlign: 'center'}}>
                         <Button startIcon={<ShoppingBag/>} variant="contained" color="primary" onClick={handleNext}>
@@ -310,7 +331,9 @@ export const SearchResults = ({
     }
     return (
         <>
-            {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
+            {searchResults && (searchResults.tiebaDocumentVOList.length > 0 ||
+                searchResults.youMayKnowPeople && searchResults.youMayKnowPeople.length > 0
+            ) && (
                 <Grid container spacing={2} sx={{marginTop: "0.1rem"}}>
                     <Grid item xs={12}>
                         <Typography variant="h5">
@@ -332,61 +355,111 @@ export const SearchResults = ({
                                 </Typography>
                             )
                         }
-                        <VIPQueryCard
-                            queryRecordId={searchResults.queryRecordId}
-                            onUnlock={data => {
-                                // console.log('onUnlock data', data);
-                                onUnlock(data);
-                            }}
-                            onPayVip={data => {
-                                // console.log('onPayVip data', data);
-                                onPayVip(data);
-                            }}
-                            isUnLocked={searchResults.vipUnlockedTime !== null}
-                        />
-                        <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+                        {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
+                            <>
+                                <VIPQueryCard
+                                    queryRecordId={searchResults.queryRecordId}
+                                    onUnlock={data => {
+                                        // console.log('onUnlock data', data);
+                                        onUnlock(data);
+                                    }}
+                                    onPayVip={data => {
+                                        // console.log('onPayVip data', data);
+                                        onPayVip(data);
+                                    }}
+                                    isUnLocked={searchResults.vipUnlockedTime !== null}
+                                />
+                                <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+                            </>
+                        )
+                        }
                     </Grid>
+                    {searchResults.youMayKnowPeople && searchResults.youMayKnowPeople.length > 0 && (
+                        <Grid item xs={12}>
+                            <Typography variant="h5">
+                                {searchResults.queryType === 'accurate_user' ? '您查询的用户详情' : '您可能想找的用户（最多50条）:'}
+                            </Typography>
+                            {searchResults.queryType !== 'accurate_user' && (
+                                <>
+                                    <Typography variant="body2" color="textSecondary">
+                                        以下是您可能认识的人，点击头像或名称可以精确搜索目标用户的发帖，横向可以滚动
+                                    </Typography>
+                                </>
+                            )
+                            }
+                            <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
+                            {/* 横向列表 */}
+                            <List sx={{
+                                display: 'flex',
+                                flexWrap: 'nowrap', // 为了确保内容不换行
+                                padding: '0px',
+                                overflowX: 'auto',  // 添加横向滚动
+                                maxWidth: '100vw',  // 设定一个最大宽度，可以根据需要调整
+                                // 子控件垂直居上
+                                alignItems: 'flex-start',
+                            }}>
+                                {searchResults.youMayKnowPeople.map((person, index) => (
+                                    <ListItem key={index} sx={{padding: '2px'}}>
+                                        <UserInfoCard data={person} onCardClick={
+                                            () => {
+                                                search("accurate_user", person.auther_id)
+                                            }
+                                        }/>
+                                    </ListItem>
+                                ))}
+                            </List>
+                        </Grid>)
+                    }
                     {/* ... (保持其他部分不变) */}
                     <Divider sx={{marginTop: "0.5rem", marginBottom: "0.5rem"}}/>
 
                     {/* 添加tiebaName过滤的按钮 */}
-                    <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem", flexWrap: "wrap"}}>
-                        <Button
-                            onClick={() => setFilteredTiebaName('全部')}
-                            variant={filteredTiebaName === '全部' ? 'contained' : 'outlined'}
-                        >
-                            全部({searchResults.tiebaDocumentVOList.length})
-                        </Button>
-                        {Object.entries(tiebaNameCounts).map(([name, count]) => (
-                            <Button
-                                key={name}
-                                onClick={() => setFilteredTiebaName(name)}
-                                variant={filteredTiebaName === name ? 'contained' : 'outlined'}
-                            >
-                                {name}({count})
-                            </Button>
-                        ))}
-                    </ButtonGroup>
+                    {searchResults && searchResults.tiebaDocumentVOList.length > 0 && (
+                        <>
+                            <ButtonGroup variant="outlined" size="small" sx={{margin: "0.5rem", flexWrap: "wrap"}}>
+                                <Button
+                                    onClick={() => setFilteredTiebaName('全部')}
+                                    variant={filteredTiebaName === '全部' ? 'contained' : 'outlined'}
+                                >
+                                    全部({searchResults.tiebaDocumentVOList.length})
+                                </Button>
+                                {Object.entries(tiebaNameCounts).map(([name, count]) => (
+                                    <Button
+                                        key={name}
+                                        onClick={() => setFilteredTiebaName(name)}
+                                        variant={filteredTiebaName === name ? 'contained' : 'outlined'}
+                                    >
+                                        {name}({count})
+                                    </Button>
+                                ))}
+                            </ButtonGroup>
 
-                    <VariableSizeList
-                        height={800}
-                        width="100%"
-                        itemSize={getItemSize}
-                        layout="vertical"
-                        itemCount={filteredList.length}
-                        itemData={{
-                            tiebaDocumentVOList: filteredList,
-                            search: search,
-                            dayjs: dayjs,
-                        }}
-                    >
-                        {Row}
-                    </VariableSizeList>
+                            <VariableSizeList
+                                height={800}
+                                width="100%"
+                                itemSize={getItemSize}
+                                layout="vertical"
+                                itemCount={filteredList.length}
+                                itemData={{
+                                    tiebaDocumentVOList: filteredList,
+                                    search: search,
+                                    dayjs: dayjs,
+                                }}
+                            >
+                                {Row}
+                            </VariableSizeList>
+                        </>
+                    )
+                    }
                 </Grid>
             )}
 
             {searchResults && searchResults.tiebaDocumentVOList.length === 0 && (
-                <Typography variant="h5" sx={{marginTop: "2rem"}}>暂无搜索结果，请调整搜索内容后重试</Typography>
+                <Typography variant="h5" sx={{marginTop: "2rem"}}>
+                    {
+                        searchResults.queryType === 'accurate_user' ? '系统内暂未收录到该用户的发帖记录' : '未查询到符合条件的发帖记录，请调整搜索内容后重试'
+                    }
+                </Typography>
             )}
         </>
     );
@@ -451,6 +524,8 @@ export default function Home({searchParams: {queryType, queryWord}}) {
     useEffect(() => {
             if (queryType && queryWord && !searchResults) {
                 search(queryType, queryWord);
+                // 去除url
+                window.history.replaceState({}, '', '/');
             }
         }
         , [queryType, queryWord]);
@@ -500,7 +575,7 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                                 variant="outlined"
                                 value={searchValue}
                                 onChange={handleSearchInputChange}
-                                placeholder={searchPlaceholder}
+                                placeholder={"昵称/用户名/帖子标题/内容"}
                             />
                         </Grid>
                         <Grid item xs={2}>
@@ -520,27 +595,27 @@ export default function Home({searchParams: {queryType, queryWord}}) {
 
 
                 {/* 搜索选项部分 */}
-                <Grid item xs={12} sm={12}>
-                    <RadioGroup
-                        row
-                        aria-label="searchType"
-                        name="searchType"
-                        value={searchType}
-                        onChange={handleSearchTypeChange}
-                    >
-                        <FormControlLabel
-                            value="fuzzy"
-                            control={<Radio color="primary"/>}
-                            label="模糊搜索用户、帖子标题、内容"
-                        />
-                        <FormControlLabel
-                            value="accurate_user"
-                            control={<Radio color="primary"/>}
-                            label="精确搜索用户发帖"
-                        />
-                        {/*垂直*/}
-                    </RadioGroup>
-                </Grid>
+                {/*<Grid item xs={12} sm={12}>*/}
+                {/*    <RadioGroup*/}
+                {/*        row*/}
+                {/*        aria-label="searchType"*/}
+                {/*        name="searchType"*/}
+                {/*        value={searchType}*/}
+                {/*        onChange={handleSearchTypeChange}*/}
+                {/*    >*/}
+                {/*        <FormControlLabel*/}
+                {/*            value="fuzzy"*/}
+                {/*            control={<Radio color="primary"/>}*/}
+                {/*            label="模糊搜索用户、帖子标题、内容"*/}
+                {/*        />*/}
+                {/*        <FormControlLabel*/}
+                {/*            value="accurate_user"*/}
+                {/*            control={<Radio color="primary"/>}*/}
+                {/*            label="精确搜索用户发帖"*/}
+                {/*        />*/}
+                {/*        /!*垂直*!/*/}
+                {/*    </RadioGroup>*/}
+                {/*</Grid>*/}
                 <Grid item xs={12} sm={12}>
                     <Link href="/guide">
                         <Typography variant="body2" gutterBottom color="primary">

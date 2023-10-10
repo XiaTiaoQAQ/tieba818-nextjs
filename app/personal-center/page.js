@@ -75,7 +75,7 @@ export default function PersonalCenter() {
                                                               secondary={dayjs(currentUserInfo.vipVO.vip.vipEndTime).format('YYYY-MM-DD HH:mm:ss')}/>
                                             </ListItem>
                                             <ListItem>
-                                                <ListItemText primary="VIP查询次数"
+                                                <ListItemText primary="VIP查询次数/日"
                                                               secondary={currentUserInfo.vipVO.vipQueryTimes}/>
                                             </ListItem>
                                             <ListItem>

@@ -156,7 +156,7 @@ export default function WorkOrderPage() {
                                         />
                                         <Link href={`/work-order/detail?workOrderId=${order.workOrder.id}`}>
                                             <Button variant="contained" color="primary">
-                                                查看详情
+                                                详情
                                             </Button>
                                         </Link>
                                     </ListItem>
