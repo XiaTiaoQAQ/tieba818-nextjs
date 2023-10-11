@@ -27,7 +27,7 @@ import {HelpOutline, Search, ShoppingBag, VpnKey} from "@mui/icons-material";
 import {useToast} from '@/components/ToastContext';
 import xtRequest from '@/utils/xt-request';
 import dayjs from 'dayjs';
-import {XTContext} from './layout';
+import {XTContext} from "@/app/client-root-layout";
 import CardContent from "@mui/material/CardContent";
 import {CloseIcon} from "next/dist/client/components/react-dev-overlay/internal/icons/CloseIcon";
 import {FixedSizeList, VariableSizeList} from "react-window";
@@ -554,7 +554,6 @@ export default function Home({searchParams: {queryType, queryWord}}) {
         try {
             const data = await xtRequest({url, method: 'GET'});
             showToast('搜索成功');
-            // console.log(data.data);
             setSearchResults(data.data);  // 新增此行
             setProgress(100);
         } catch (error) {
@@ -623,7 +622,6 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         </Typography>
                     </Link>
                 </Grid>
-                {/*    目前支持的贴吧列表+问号Icon，有点击事件*/}
             </Grid>
             <SuportTiebaList/>
             <SearchResults

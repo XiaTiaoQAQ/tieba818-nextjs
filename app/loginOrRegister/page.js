@@ -8,9 +8,9 @@ import Button from "@mui/material/Button";
 import {useToast} from "@/components/ToastContext";
 import xtRequest from "@/utils/xt-request";
 import {useRouter} from 'next/navigation';
-import {XTContext} from "@/app/layout";
 import {useLoadingDialog} from "@/components/LoadingDialogContext";
 import Link from "next/link";
+import {XTContext} from "@/app/client-root-layout";
 
 
 const StyledContainer = styled(Grid)(({theme}) => ({

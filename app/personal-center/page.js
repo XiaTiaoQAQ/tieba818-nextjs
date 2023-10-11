@@ -2,7 +2,7 @@
 import React, {useContext, useState} from 'react';
 import dayjs from 'dayjs';
 import {Typography, Container, Card, CardContent, Divider, List, ListItem, ListItemText} from '@mui/material';
-import {XTContext} from "@/app/layout";
+import {XTContext} from "@/app/client-root-layout";
 import {fromVipLevelToVipName} from "@/utils/utils";
 import Button from "@mui/material/Button";
 import {VIPDialog} from "@/app/page";

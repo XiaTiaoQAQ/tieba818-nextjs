@@ -1,8 +1,12 @@
 import React, {useState} from 'react';
 import {IconButton, Dialog, DialogTitle, DialogContent, Typography, Box, List} from '@mui/material';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import {XTContext} from "@/app/client-root-layout";
+import dayjs from "dayjs";
 
 const SupportedTiebaList = () => {
+    const context = React.useContext(XTContext);
+    const {serverDataState} = context;
     const tiebaList = [
         '落俗',
         'LOL陪玩',
@@ -55,6 +59,9 @@ const SupportedTiebaList = () => {
         '梦幻西游',
         '地下城与勇士',
         '女朋友',
+        'apex英雄',
+        '剑网三交易',
+        '光遇'
     ]
     const [open, setOpen] = useState(false);
 
@@ -69,6 +76,35 @@ const SupportedTiebaList = () => {
 
     return (
         <Box>
+            {/*data: { _id: null, totalUpdateNum: 6464557, totalAddNum: 49502 }*/}
+            {serverDataState && serverDataState.todayUpdateNum && serverDataState.todayUpdateNum.data && (
+                <>
+                    <Typography component="span" gutterBottom variant="body2"
+                                color="textSecondary">今日更新：<Typography component="span" gutterBottom
+                                                                           variant="body2"
+                                                                           color="textSecondary"
+                                                                           style={{
+                                                                               color: '#d1c62c',
+                                                                               fontWeight: 'bold'
+                                                                           }}>
+                        {serverDataState.todayUpdateNum.data.totalUpdateNum}
+                    </Typography> 条快照</Typography>
+                    {/*换行*/}
+                    <Typography component="span" gutterBottom variant="body2"
+                                color="textSecondary">，今日新增：<Typography
+                        component="span" gutterBottom variant="body2" color="textSecondary"
+                        style={{color: '#d1c62c', fontWeight: 'bold'}}
+                    >
+                        {serverDataState.todayUpdateNum.data.totalAddNum}
+                    </Typography> 条快照</Typography>
+                    {/*统计更新于*/}
+                    <br/>
+                    <Typography component="span" gutterBottom variant="body2"
+                                color="textSecondary">{serverDataState.todayUpdateNum.updateTime ? '统计更新于：' + dayjs(serverDataState.todayUpdateNum.updateTime).format('YYYY-MM-DD HH:mm:ss') : '未知'}
+                    </Typography>
+                    <br/>
+                </>
+            )}
             <Typography component="span" gutterBottom variant="body2"
                         color="textSecondary">目前支持的板块和数据范围</Typography>
             <IconButton onClick={handleClickOpen}>
@@ -78,10 +114,21 @@ const SupportedTiebaList = () => {
             <Dialog onClose={handleClose} open={open} maxWidth={'sm'} fullWidth={true}>
                 <DialogTitle>目前支持的板块列表</DialogTitle>
                 {/*数据集中于2023年7月后，2023年7月前数据较为稀疏*/}
-                <Typography gutterBottom variant="body2" color="textSecondary" style={{marginLeft: '20px',marginRight:'20px'}}>数据集中于2023年7月后，2023年7月前数据较为稀疏</Typography>
-                <Typography gutterBottom variant="body2" color="textSecondary" style={{marginLeft: '20px',marginRight:'20px'}}>需要新增快照监控的板块请在工单反馈，年费VIP需求会被优先考虑。</Typography>
-                <Typography gutterBottom variant="body2" color="textSecondary" style={{marginLeft: '20px',marginRight:'20px'}}
+                <Typography gutterBottom variant="body2" color="textSecondary" style={{
+                    marginLeft: '20px',
+                    marginRight: '20px'
+                }}>数据集中于2023年7月后，2023年7月前数据较为稀疏</Typography>
+                <Typography gutterBottom variant="body2" color="textSecondary" style={{
+                    marginLeft: '20px',
+                    marginRight: '20px'
+                }}>需要新增快照监控的板块请在工单反馈，年费VIP需求会被优先考虑。</Typography>
+                <Typography gutterBottom variant="body2" color="textSecondary"
+                            style={{marginLeft: '20px', marginRight: '20px'}}
                 >支持数据更新于：{currentTime}</Typography>
+                {/*以下共xx个板块*/}
+                <Typography gutterBottom variant="body2" color="textSecondary"
+                            style={{marginLeft: '20px', marginRight: '20px'}}
+                >目前{tiebaList.length}个板块处于持续监控</Typography>
                 <DialogContent style={{maxHeight: '400px', overflow: 'auto'}}>
                     <List>
                         {tiebaList.map((tieba, index) => (
