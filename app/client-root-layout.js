@@ -34,7 +34,10 @@ const FooterBar = () => {
                 fontSize: '12px',
                 //     文字居中
                 textAlign: 'center',
-            }}>
+            }}
+                  prefetch={true}
+                  replace={false}
+            >
                 CopyRight © 2023 tiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
             </Link>
         </footer>
@@ -114,7 +117,9 @@ export default function RootLayoutInClient({children, serverData}) {
                                 }}>
                                 {/* DashboardIcon 和 Typography 居左 */}
                                 {/*添加点击事件，跳转首页*/}
-                                <Link href="/">
+                                <Link href="/"
+                                      prefetch={true}
+                                      replace={false}>
                                     <Box display="flex" alignItems="center">
                                         <DashboardIcon sx={{color: '#444', mr: 2, transform: 'translateY(-2px)'}}/>
                                         <Typography variant="h6" noWrap component="div" color="black">
@@ -155,14 +160,17 @@ export default function RootLayoutInClient({children, serverData}) {
                                                     zIndex: 2001
                                                 }}
                                             >
-                                                <Link href="/personal-center">
+                                                <Link href="/personal-center" prefetch={true}
+                                                      replace={false}>
                                                     <MenuItem onClick={handleClose}>个人中心</MenuItem>
                                                 </Link>
-                                                <Link href="/search-history">
+                                                <Link href="/search-history" prefetch={true}
+                                                      replace={false}>
                                                     <MenuItem onClick={handleClose}>查询历史</MenuItem>
                                                 </Link>
                                                 {/* 工单系统 */}
-                                                <Link href="/work-order">
+                                                <Link href="/work-order" prefetch={true}
+                                                      replace={false}>
                                                     <MenuItem onClick={handleClose}>我的工单</MenuItem>
                                                 </Link>
                                                 <MenuItem onClick={
@@ -177,10 +185,12 @@ export default function RootLayoutInClient({children, serverData}) {
                                         </>
                                     ) : (
                                         <>
-                                            <Link href="/loginOrRegister?mode=login">
+                                            <Link href="/loginOrRegister?mode=login" prefetch={true}
+                                                  replace={false}>
                                                 <Button color="primary">登录</Button>
                                             </Link>
-                                            <Link href="/loginOrRegister?mode=register">
+                                            <Link href="/loginOrRegister?mode=register" prefetch={true}
+                                                  replace={false}>
                                                 <Button color="primary">注册</Button>
                                             </Link>
                                         </>

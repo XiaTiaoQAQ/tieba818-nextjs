@@ -154,7 +154,8 @@ export default function WorkOrderPage() {
                                                 </>
                                             }
                                         />
-                                        <Link href={`/work-order/detail?workOrderId=${order.workOrder.id}`}>
+                                        <Link href={`/work-order/detail?workOrderId=${order.workOrder.id}`}  prefetch={true}
+                                              replace={false}>
                                             <Button variant="contained" color="primary">
                                                 详情
                                             </Button>

@@ -631,7 +631,10 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                         lineHeight: '1.43',
                         marginBottom: '0.35rem',
                         fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
-                    }}>
+                    }}
+                          prefetch={true}
+                          replace={false}
+                    >
                         第一次使用？推荐阅读《使用指引》
                     </Link>
                 </Grid>

@@ -31,7 +31,8 @@ function SearchItem({item}) {
                     </>
                 }
             />
-            <Link href={`/search-detail?queryRecordId=${item.recordId}`}>
+            <Link href={`/search-detail?queryRecordId=${item.recordId}`}  prefetch={true}
+                  replace={false}>
                 <Button variant="contained" color="primary">
                     详情
                 </Button>

@@ -122,7 +122,8 @@ export default function LoginOrRegister({searchParams: {mode = 'login'}}) {
                         {/*在您登录或注册前，请确保您已阅读并同意《数据使用说明》和《免责条款》*/}
                         <Typography variant="body2" color="textSecondary" align="left" sx={{marginTop: '0.5rem'}}>
                             在您登录或注册前，请确保您已阅读并同意
-                            <Link href="/disclaimer-clause" color="primary">
+                            <Link href="/disclaimer-clause" color="primary"  prefetch={true}
+                                  replace={false}>
                                 《数据使用说明》
                             </Link>
                         </Typography>
