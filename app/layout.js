@@ -4,19 +4,26 @@ import React from "react";
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 async function getTodayUpdateNum() {
-    const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://tieba.in';
-    const data = await fetch(baseUrl + "/818-api/818/openPublicApi/todayRequestTrackAnalysis", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-    });
-    const dataObj = await data.json();
-    console.log("getTodayUpdateNum 请求数据：", dataObj);
-    return {
-        "data": dataObj.data,
-        //当前时间
-        "updateTime": new Date().getTime()
+    try {
+        const baseUrl = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://tieba.in';
+        const data = await fetch(baseUrl + "/818-api/818/openPublicApi/todayRequestTrackAnalysis", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                cache: 'no-cache',
+            }
+        );
+        const dataObj = await data.json();
+        console.log("getTodayUpdateNum 请求数据：", dataObj);
+        return {
+            "data": dataObj.data,
+            //当前时间
+            "updateTime": new Date().getTime()
+        }
+    } catch (e) {
+        console.log("getTodayUpdateNum 请求数据失败：", e);
+        return null;
     }
 }
 
@@ -26,8 +33,12 @@ export default async function RootLayoutInServer({children}) {
     // 判断时间是否大于10秒
     if (!todayUpdateNumData || todayUpdateNumData.updateTime + 1000 * 10 < new Date().getTime()) {
         // 如果大于10秒，重新获取数据
-        serverSideData = {
-            "todayUpdateNum": await getTodayUpdateNum()
+        var result = await getTodayUpdateNum()
+        if (result) {
+            serverSideData = {
+                "todayUpdateNum": result
+            }
+            serverSideData.todayUpdateNum.updateTime = new Date().getTime()
         }
     } else {
         // 如果小于10秒，使用缓存数据

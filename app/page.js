@@ -107,7 +107,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
         '输入激活码、点击激活',
         '激活成功！'
     ];
-    const monthlyPrice = 38;
+    const monthlyPrice = 25;
     const priceCards = [
         {
             title: '体验卡(周卡)',
@@ -117,19 +117,19 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
         },
         {
             title: '月卡',
-            price: 38,
+            price: 25,
             originalPrice: null,
             unlocks: '每日20次解锁'
         },
         {
             title: '季卡',
-            price: 88,
+            price: 68,
             originalPrice: monthlyPrice * 3,
             unlocks: '每日50次解锁'
         },
         {
             title: '年卡',
-            price: 288,
+            price: 188,
             originalPrice: monthlyPrice * 12,
             unlocks: '每日88次解锁\n 系统内设置仅14天快照可见用户（1名）\n 工单优先处理'
         }
@@ -191,30 +191,36 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                     点击跳转打开vniao、购买激活码
                 </Typography>
             </Link>
-            <div style={{ margin: '16px' }}>
+            <div style={{margin: '16px'}}>
                 {priceCards.map(card => (
-                    <Card variant="outlined" style={{ width: '100%', marginBottom: '8px' }} key={card.title}>
+                    <Card variant="outlined" style={{width: '100%', marginBottom: '8px'}} key={card.title}>
                         <CardContent>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
                                 <Typography variant="h6" component="div"
-                                sx={{
-                                    fontWeight: 'bold',
-                                }}
+                                            sx={{
+                                                fontWeight: 'bold',
+                                            }}
                                 >
                                     {card.title}
                                 </Typography>
                                 <div>
                                     {card.originalPrice &&
-                                        <Typography variant="body2" style={{ textDecoration: 'line-through', color: 'grey', display: 'inline', marginRight: '8px' }}>
+                                        <Typography variant="body2" style={{
+                                            textDecoration: 'line-through',
+                                            color: 'grey',
+                                            display: 'inline',
+                                            marginRight: '8px'
+                                        }}>
                                             {card.originalPrice}元
                                         </Typography>
                                     }
-                                    <Typography variant="subtitle1" color="primary" sx={{ fontWeight: 'bold', display: 'inline' }}>
+                                    <Typography variant="subtitle1" color="primary"
+                                                sx={{fontWeight: 'bold', display: 'inline'}}>
                                         {card.price.toFixed(2)}元
                                     </Typography>
                                 </div>
                             </div>
-                            <Typography variant="subtitle2" sx={{ whiteSpace: 'pre-line', marginTop: '8px' }}>
+                            <Typography variant="subtitle2" sx={{whiteSpace: 'pre-line', marginTop: '8px'}}>
                                 {card.unlocks}
                             </Typography>
                         </CardContent>
@@ -616,10 +622,17 @@ export default function Home({searchParams: {queryType, queryWord}}) {
                 {/*    </RadioGroup>*/}
                 {/*</Grid>*/}
                 <Grid item xs={12} sm={12}>
-                    <Link href="/guide">
-                        <Typography variant="body2" gutterBottom color="primary">
-                            第一次使用？推荐阅读《使用指引》
-                        </Typography>
+                    <Link href="/guide" style={{
+                        textDecoration: 'none',
+                        color: '#1976D2',
+                        display: 'flex',
+                        alignItems: 'center',
+                        fontSize: '0.875rem',
+                        lineHeight: '1.43',
+                        marginBottom: '0.35rem',
+                        fontFamily: 'Roboto, Helvetica, Arial, sans-serif',
+                    }}>
+                        第一次使用？推荐阅读《使用指引》
                     </Link>
                 </Grid>
             </Grid>
