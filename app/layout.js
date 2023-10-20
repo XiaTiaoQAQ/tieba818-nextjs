@@ -47,7 +47,7 @@ export default async function RootLayoutInServer({children}) {
     return (
         <html lang="en">
         <body className='818body'>
-        <title>Tieba.in Inc.</title>
+        <title>Tieba.in Inc. - 贴吧黑洞工具箱</title>
         <RootLayoutInClient serverData={serverSideData}>
             {children}
         </RootLayoutInClient>

@@ -38,8 +38,27 @@ const FooterBar = () => {
                   prefetch={true}
                   replace={false}
             >
-                CopyRight © 2023 tiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
+                CopyRight © 2023 TiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
             </Link>
+            <Link href={'/contact-us'} style={{
+                textDecoration: 'none',
+                color: '#444',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100%',
+                width: '100%',
+                flexDirection: 'column',
+                padding: '20px 10px',
+                fontSize: '12px',
+                //     文字居中
+                textAlign: 'center',
+            }
+            }
+                    prefetch={true}
+                    replace={false}
+            >（TiebaIn Inc Version 1.0.1）</Link>
+
         </footer>
     )
 }
