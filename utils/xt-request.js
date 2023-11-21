@@ -1,16 +1,12 @@
-// utils/request.js
 async function xtRequest({
                              url,
                              method = 'GET',
                              body = null,
-                             onSuccess = () => {
-                             },  // 默认为空函数
-                             onFailure = () => {
-                             }   // 默认为空函数
+                             file = null, // 新增参数来传递文件
+                             onSuccess = () => {},
+                             onFailure = () => {}
                          }) {
-    const headers = {
-        'Content-Type': 'application/json'
-    };
+    const headers = {};
 
     // 如果localStorage中有token，添加到headers
     const token = localStorage.getItem('token');
@@ -23,30 +19,43 @@ async function xtRequest({
         headers,
     };
 
-    if (body && (method === 'POST' || method === 'PUT')) {
+    if (file) {
+        // 如果有文件，则使用 FormData
+        const formData = new FormData();
+        formData.append("file", file); // 根据后端的接收参数来确定键名
+
+        if (body) {
+            // 如果还有其他需要一起发送的数据，也可以添加到 FormData
+            Object.keys(body).forEach(key => {
+                formData.append(key, body[key]);
+            });
+        }
+
+        config.body = formData;
+    } else if (body && (method === 'POST' || method === 'PUT')) {
+        config.headers['Content-Type'] = 'application/json';
         config.body = JSON.stringify(body);
     }
+
     // 设置超时时间
     config.timeout = 60000; // 60秒
     try {
         const response = await fetch(url, config);
-        // 如果状态码是 401，说明 token 失效了，需要重新登录，清除 localStorage 中的 token
         if (response.status === 401) {
             localStorage.removeItem('token');
             window.location.href = '/loginOrRegister?mode=login';
         }
         const data = await response.json();
         if (data.success) {
-            onSuccess(data); // 如果请求成功，则调用 onSuccess 函数
+            onSuccess(data);
         } else {
-            onFailure(data); // 如果请求失败，则调用 onFailure 函数
+            onFailure(data);
         }
         return data;
     } catch (error) {
-        onFailure(error); // 如果有其他错误（例如网络问题），也调用 onFailure 函数
+        onFailure(error);
         throw error;
     }
 }
-
 
 export default xtRequest;
