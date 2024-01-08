@@ -16,7 +16,7 @@ export default function PublishPost() {
     const showToast = useToast();
     const router = useRouter();
     // 按钮类型数组
-    const buttonTypes = ['无', '贴吧', '知乎', '微博', '其他'];
+    const buttonTypes = ['骗子', '海王', '情感纠葛','假肢', '其他'];
     const handlePublish = () => {
         // 发布帖子的请求逻辑
         const postData = {
@@ -59,22 +59,79 @@ export default function PublishPost() {
             }
         );
     };
-
+    // {
+    //     {
+    //         '& .MuiFilledInput-root': {
+    //             backgroundColor: '#F8F8F8',
+    //         },
+    //         '& .MuiFilledInput-underline:before': {
+    //             borderBottom: 'none',
+    //         },
+    //         '& .MuiFilledInput-underline:after': {
+    //             borderBottom: 'none',
+    //         },
+    //         '& .MuiFilledInput-underline:hover:before': {
+    //             borderBottom: 'none',
+    //         }
+    //     }
+    //    }
+    const inputSX = 
+    {
+        '& .MuiFilledInput-root': {
+            backgroundColor: '#F8F8F8',
+        },
+        '& .MuiFilledInput-underline:before': {
+            borderBottom: 'none',
+        },
+        '& .MuiFilledInput-underline:after': {
+            borderBottom: 'none',
+        },
+        '& .MuiFilledInput-underline:hover:before': {
+            borderBottom: 'none',
+        },
+        // multiline的下划线
+        '& .MuiFilledInput-multiline:before': {
+            borderBottom: 'none',
+        },
+        // 没有lable的时候，multiline的下划线
+        '& .MuiFilledInput-multiline:after': {
+            borderBottom: 'none',
+        },
+        // lable 选中的时候也是灰色
+        '& .MuiInputLabel-filled': {
+            color: '#9E9E9E',
+        },
+    };
     return (
         <Container maxWidth="md">
             <Paper elevation={3} sx={{p: 2, mt: 3}}>
                 <Typography variant="h5" gutterBottom>
                     发布帖子
                 </Typography>
-                <Box component="form" mt={3} sx={{'& .MuiTextField-root': {my: 1}}}>
+                <Box component="form"  mt={3} sx={{'& .MuiTextField-root': {my: 1}}}>
                     <Grid container spacing={2}>
                         <Grid item xs={12}>
-                            <TextField label="标题" variant="outlined" fullWidth value={title}
-                                       onChange={(e) => setTitle(e.target.value)}/>
+                            <TextField label="标题" variant="filled" fullWidth value={title}
+                                       onChange={(e) => setTitle(e.target.value)}
+                                    //    sx={inputSX} 基础上再调字号
+                                        sx = {
+                                            {
+                                                ...inputSX,
+                                                '& .MuiFilledInput-input': {
+                                                    fontSize: '1.5rem',
+                                                    fontWeight: 'bold',
+                                                }
+                                            }
+                                        }
+                                       />
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="内容" variant="outlined" fullWidth multiline rows={4} value={content}
-                                       onChange={(e) => setContent(e.target.value)}/>
+                            <TextField label="内容" variant="filled" fullWidth multiline rows={6} value={content}
+                                       onChange={(e) => setContent(e.target.value)}
+                                       sx={{
+                                             ...inputSX
+                                       }}
+                                       />
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="body1" gutterBottom sx={{fontWeight: 'bold'}}>
@@ -89,10 +146,17 @@ export default function PublishPost() {
                                 {buttonTypes.map((btnType) => (
                                     <Button
                                         key={btnType}
-                                        variant={type === btnType ? 'contained' : 'outlined'}
+                                        variant={type === btnType ? 'contained' : 'contained'}
+                                        // color={type === btnType ? 'primary' : 'default'}
                                         onClick={() => setType(btnType)}
                                         sx={{
                                             minWidth: 'fit-content',
+                                            color: type === btnType ? 'white' : 'black',
+                                            backgroundColor: type === btnType ? '#1976D2' : '#F8F8F8',
+                                            '&:hover': {
+                                                backgroundColor: type === btnType ? '#1976D2' : '#1976D2',
+                                                color: 'white',
+                                            }
                                         }}
                                     >
                                         {btnType}
@@ -101,8 +165,10 @@ export default function PublishPost() {
                             </Stack>
                         </Grid>
                         <Grid item xs={12}>
-                            <TextField label="目标贴吧名称" variant="outlined" fullWidth value={targetTiebaName}
-                                       onChange={(e) => setTargetTiebaName(e.target.value)}/>
+                            <TextField label="目标贴吧名称" variant="filled" fullWidth value={targetTiebaName}
+                                       onChange={(e) => setTargetTiebaName(e.target.value)}
+                                       sx={inputSX}
+                                       />
                         </Grid>
                         <Grid item xs={12}>
                             <Typography variant="body1" gutterBottom sx={{fontWeight: 'bold'}}>

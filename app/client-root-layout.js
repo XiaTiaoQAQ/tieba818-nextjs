@@ -41,7 +41,7 @@ const FooterBar = () => {
                   prefetch={true}
                   replace={false}
             >
-                CopyRight © 2023 TiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
+                CopyRight © 2024 TiebaIN Inc. All Rights Reserved. 所有数据均来自于公开互联网资料，如有侵权请联系。
             </Link>
             {/*<Link href={'/contact-us'} style={{*/}
             {/*    textDecoration: 'none',*/}
@@ -126,20 +126,20 @@ export default function RootLayoutInClient({children, serverData}) {
         );
     }
     const navItems = [
-        {
-            key: 'TiebaIn 挂人',
-            icon: Podcasts,
-            primary: 'TiebaIn 挂人',
-            secondary: '挂、扒、吃瓜',
-            href: '/posts-square'
-        },
-        {
-            key: 'TiebaIn 数据统计',
-            icon: QueryStats,
-            primary: 'TiebaIn 数据统计',
-            secondary: '趋势、排行 每日更新',
-            href: '/search-history'
-        }
+        // {
+        //     key: 'TiebaIn 挂人',
+        //     icon: Podcasts,
+        //     primary: 'TiebaIn 挂人',
+        //     secondary: '挂、扒、吃瓜',
+        //     href: '/posts-square'
+        // },
+        // {
+        //     key: 'TiebaIn 数据统计',
+        //     icon: QueryStats,
+        //     primary: 'TiebaIn 数据统计',
+        //     secondary: '趋势、排行 每日更新',
+        //     href: '/search-history'
+        // }
     ]
     return (
         <ThemeRegistry>
@@ -288,7 +288,7 @@ export default function RootLayoutInClient({children, serverData}) {
                                                             variant="body2"
                                                             color="textSecondary"
                                                 >
-                                                    TiebaIn Inc. Version 1.0.1
+                                                    TiebaIn Inc. Version 1.0.2
                                                 </Typography>
                                             </Menu>
                                         </>
@@ -305,22 +305,22 @@ export default function RootLayoutInClient({children, serverData}) {
                                         </>
                                     )}
                                     {/*    更多按钮 只在手机显示 */}
-                                    <MenuOutlined
-                                        sx={{
-                                            cursor: 'pointer',
-                                            fontSize: '2rem',
-                                            display: {
-                                                xs: 'block',
-                                                sm: 'none',
-                                                md: 'none',
-                                                lg: 'none',
-                                                xl: 'none',
-                                            }
-                                        }
-                                        }
-                                        color={'action'}
-                                        onClick={toggleDrawer(true)}
-                                    />
+                                    {/*<MenuOutlined*/}
+                                    {/*    sx={{*/}
+                                    {/*        cursor: 'pointer',*/}
+                                    {/*        fontSize: '2rem',*/}
+                                    {/*        display: {*/}
+                                    {/*            xs: 'block',*/}
+                                    {/*            sm: 'none',*/}
+                                    {/*            md: 'none',*/}
+                                    {/*            lg: 'none',*/}
+                                    {/*            xl: 'none',*/}
+                                    {/*        }*/}
+                                    {/*    }*/}
+                                    {/*    }*/}
+                                    {/*    color={'action'}*/}
+                                    {/*    onClick={toggleDrawer(true)}*/}
+                                    {/*/>*/}
                                     {/*    Drawer */}
                                     <Drawer
                                         anchor={'right'}

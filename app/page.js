@@ -103,7 +103,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
     const context = useContext(XTContext);
     const loadingDialogContext = useLoadingDialog();
     const steps = [
-        '跳转打开vniao、购买激活码',
+        '跳转打开网站、购买激活码',
         '输入激活码、点击激活',
         '激活成功！'
     ];
@@ -168,7 +168,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
         // Here you can handle specific logic for each step
         if (activeStep === 0) {
             // 新窗口打开vniao
-            window.open("https://vn.vmp.cc/vniao/2236A1EC");
+            window.open("https://www.312faka.com/links/427B17BC");
             setActiveStep(prevActiveStep => prevActiveStep + 1);
         }
         if (activeStep === 1) {
@@ -186,9 +186,9 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                 </IconButton>
             </DialogTitle>
             {/* 跳转Vniao */}
-            <Link href="https://vn.vmp.cc/vniao/2236A1EC" target="_blank">
+            <Link href="https://www.312faka.com/links/427B17BC" target="_blank">
                 <Typography variant="body2" color="text.secondary" style={{margin: '-20px 0px 0px 20px'}}>
-                    点击跳转打开vniao、购买激活码
+                    点击跳转打开网站、购买激活码
                 </Typography>
             </Link>
             <div style={{margin: '16px'}}>
@@ -244,7 +244,7 @@ export function VIPDialog({openDialog, handleCloseDialog, onPayVip}) {
                 {activeStep === 0 && (
                     <div style={{textAlign: 'center'}}>
                         <Button startIcon={<ShoppingBag/>} variant="contained" color="primary" onClick={handleNext}>
-                            打开vniao购买
+                            打开网站购买
                         </Button>
                     </div>
                 )}

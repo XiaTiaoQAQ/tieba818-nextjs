@@ -28,7 +28,7 @@ export default function ContactUsPage() {
 
 ----
 
-**CopyRight © 2023 TiebaIn Inc. All Rights Reserved.**
+**CopyRight © 2024 TiebaIn Inc. All Rights Reserved.**
     `
     return (
         <TiebaInArticle markdown={markdown}/>

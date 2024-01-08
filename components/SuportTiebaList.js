@@ -61,7 +61,15 @@ const SupportedTiebaList = () => {
         '女朋友',
         'apex英雄',
         '剑网三交易',
-        '光遇'
+        '光遇',
+        '陪陪圈',
+        '剑三海鳗',
+        'csgo陪玩',
+        'pubg陪玩',
+        '扒皮',
+        'les',
+        'gay',
+        '女生'
     ]
     const [open, setOpen] = useState(false);
 
